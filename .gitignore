@@ -1,0 +1,8 @@
+.DS_Store
+
+# Node dependencies
+node_modules/
+sites/kinexus-assistant/dist/
+
+# Optional local tooling caches
+.vite/

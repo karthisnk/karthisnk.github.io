@@ -1,10 +1,119 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>My First GitHub Page</title>
-</head>
-<body>
-    <h1>Hello world!</h1>
-    <p>Welcome to my GitHub Pages site!</p>
-</body>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Karthi Nexus | Experience Dashboard</title>
+        <meta
+            name="description"
+            content="A premium launcher for interactive AI, design, and systems experiences."
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="./styles/global.css" />
+        <link rel="stylesheet" href="./styles/dashboard.css" />
+        <link rel="stylesheet" href="./styles/motion.css" />
+    </head>
+    <body>
+        <div class="ambient-layer" aria-hidden="true"></div>
+        <div class="noise-layer" aria-hidden="true"></div>
+
+        <main id="top" class="dashboard-shell">
+            <div class="controls surface reveal page-header-controls" aria-label="Experience filters">
+                <label class="search-wrap" for="search-input">
+                    <span class="search-label">Search</span>
+                    <input
+                        id="search-input"
+                        name="search"
+                        type="search"
+                        placeholder="Find by title or description"
+                        autocomplete="off"
+                    />
+                </label>
+
+                <div class="select-wrap">
+                    <label for="category-filter">Category</label>
+                    <select id="category-filter" name="category"></select>
+                </div>
+
+                <div class="select-wrap">
+                    <label for="status-filter">Status</label>
+                    <select id="status-filter" name="status"></select>
+                </div>
+
+                <button id="clear-filters" class="btn btn-ghost" type="button">Clear Filters</button>
+            </div>
+
+            <section class="section reveal" id="featured-experiences" aria-labelledby="featured-title">
+                <div class="section-head">
+                    <h2 id="featured-title">Featured Experiences</h2>
+                    <p>Start here for the most important demos in the collection.</p>
+                </div>
+                <div id="featured-grid" class="featured-grid" role="list"></div>
+            </section>
+
+            <section class="section reveal" id="all-experiences" aria-labelledby="all-title">
+                <div class="section-head">
+                    <h2 id="all-title">All Experiences</h2>
+                    <p>Search and filter by focus area, category, and status.</p>
+                </div>
+
+                <div class="tag-region">
+                    <p class="tag-title">Filter by Tags</p>
+                    <div id="tag-chips" class="tag-chips" role="toolbar" aria-label="Tag filters"></div>
+                </div>
+
+                <p id="results-summary" class="results-summary" aria-live="polite"></p>
+                <div id="all-grid" class="all-grid" role="list"></div>
+
+                <div id="empty-state" class="empty-state surface" hidden>
+                    <h3>No matches found</h3>
+                    <p>Try fewer filters or clear the search to see all experiences.</p>
+                    <button id="empty-reset" class="btn btn-primary" type="button">Reset Filters</button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <p>Built for GitHub Pages • Metadata-first architecture • Motion with restraint</p>
+            <a href="#top">Back to top</a>
+        </footer>
+
+        <dialog id="preview-modal" class="preview-modal" aria-labelledby="preview-title">
+            <article class="preview-content surface">
+                <button id="preview-close" class="icon-btn" type="button" aria-label="Close preview">x</button>
+                <p id="preview-status" class="status-pill"></p>
+                <h3 id="preview-title"></h3>
+                <p id="preview-description"></p>
+                <div id="preview-tags" class="modal-tags"></div>
+                <p id="preview-meta" class="preview-meta"></p>
+                <div class="preview-actions">
+                    <a id="preview-open" class="btn btn-primary" href="#">Open Experience</a>
+                    <button id="preview-cancel" class="btn btn-ghost" type="button">Close</button>
+                </div>
+            </article>
+        </dialog>
+
+        <dialog id="command-palette" class="palette" aria-labelledby="palette-title">
+            <article class="palette-content surface">
+                <div class="palette-head">
+                    <h3 id="palette-title">Command Palette</h3>
+                    <button id="palette-close" class="icon-btn" type="button" aria-label="Close command palette">x</button>
+                </div>
+                <label for="palette-input" class="sr-only">Search experiences</label>
+                <input id="palette-input" type="search" placeholder="Type to jump to an experience" autocomplete="off" />
+                <ul id="palette-results" class="palette-results"></ul>
+            </article>
+        </dialog>
+
+        <div id="page-transition" class="page-transition" aria-hidden="true">
+            <span>Opening Experience</span>
+        </div>
+
+        <script src="./scripts/dashboard.js" type="module"></script>
+    </body>
 </html>

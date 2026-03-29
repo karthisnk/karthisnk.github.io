@@ -1,0 +1,13 @@
+{
+  "name": "karthisnk-github-io",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Root helper scripts for dashboard and mini-site workflows",
+  "scripts": {
+    "install:kinexus": "npm --prefix sites/kinexus-assistant install",
+    "build:kinexus": "npm --prefix sites/kinexus-assistant run build",
+    "dev:kinexus": "npm --prefix sites/kinexus-assistant run dev",
+    "serve": "python3 -m http.server 8080",
+    "local": "npm run install:kinexus && npm run build:kinexus && npm run serve"
+  }
+}
