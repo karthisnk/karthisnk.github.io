@@ -274,6 +274,10 @@ function renderCards() {
 /* ═══════════════════════════════════════════════════
    Card entrance animation (IntersectionObserver)
    ═══════════════════════════════════════════════════ */
+const CARD_STAGGER_MS      = 55;  // delay increment per story card
+const MINI_INITIAL_DELAY_MS = 120; // base delay for mini hero cards
+const MINI_STAGGER_MS      = 80;  // delay increment per mini card
+
 const cardObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -285,7 +289,7 @@ const cardObserver = new IntersectionObserver((entries) => {
 
 function observeCards() {
   cardGrid.querySelectorAll(".story-card").forEach((card, i) => {
-    card.style.animationDelay = `${i * 55}ms`;
+    card.style.animationDelay = `${i * CARD_STAGGER_MS}ms`;
     cardObserver.observe(card);
   });
 }
@@ -293,7 +297,7 @@ function observeCards() {
 /* Mini cards in the hero stack */
 function observeMiniCards() {
   document.querySelectorAll(".mini-card").forEach((card, i) => {
-    card.style.animationDelay = `${120 + i * 80}ms`;
+    card.style.animationDelay = `${MINI_INITIAL_DELAY_MS + i * MINI_STAGGER_MS}ms`;
     cardObserver.observe(card);
   });
 }

@@ -640,12 +640,12 @@ a { color: inherit; }
   transition: box-shadow 220ms ease, transform 220ms ease, border-color 220ms ease;
   align-items: flex-start;
   position: relative;
-  will-change: transform;
 }
 .story-card:hover {
   box-shadow: var(--shadow-card-hover);
   transform: translateY(-3px) scale(1.006);
   border-color: color-mix(in srgb, var(--brand) 20%, transparent);
+  will-change: transform;
 }
 
 .card-content {
