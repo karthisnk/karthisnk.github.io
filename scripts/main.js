@@ -25,13 +25,23 @@ const resultMeta  = document.getElementById("resultMeta");
 const themeToggle = document.getElementById("themeToggle");
 
 /* ─── Theme ────────────────────────────────────────── */
-const savedTheme = localStorage.getItem("theme") || "light";
-document.documentElement.setAttribute("data-theme", savedTheme);
+// Detect system preference; stored preference wins if set
+const storedTheme = localStorage.getItem("theme");
+const prefersDark  = window.matchMedia("(prefers-color-scheme: dark)").matches;
+const initialTheme = storedTheme || (prefersDark ? "dark" : "light");
+document.documentElement.setAttribute("data-theme", initialTheme);
 
 themeToggle?.addEventListener("click", () => {
   const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", next);
   localStorage.setItem("theme", next);
+});
+
+// Keep in sync if the OS switches while the page is open (and no stored pref)
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e => {
+  if (!localStorage.getItem("theme")) {
+    document.documentElement.setAttribute("data-theme", e.matches ? "dark" : "light");
+  }
 });
 
 /* ─── State ────────────────────────────────────────── */
@@ -93,6 +103,8 @@ function renderHero(idx) {
     d.classList.toggle("active", i === idx);
     d.setAttribute("aria-selected", String(i === idx));
   });
+
+  observeMiniCards();
 }
 
 function buildDots() {
@@ -254,6 +266,35 @@ function renderCards() {
     `;
 
     cardGrid.appendChild(a);
+  });
+
+  observeCards();
+}
+
+/* ═══════════════════════════════════════════════════
+   Card entrance animation (IntersectionObserver)
+   ═══════════════════════════════════════════════════ */
+const cardObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("animate-in");
+      cardObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: "0px 0px -20px 0px" });
+
+function observeCards() {
+  cardGrid.querySelectorAll(".story-card").forEach((card, i) => {
+    card.style.animationDelay = `${i * 55}ms`;
+    cardObserver.observe(card);
+  });
+}
+
+/* Mini cards in the hero stack */
+function observeMiniCards() {
+  document.querySelectorAll(".mini-card").forEach((card, i) => {
+    card.style.animationDelay = `${120 + i * 80}ms`;
+    cardObserver.observe(card);
   });
 }
 
