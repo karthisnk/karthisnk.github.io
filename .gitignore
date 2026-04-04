@@ -6,3 +6,11 @@ sites/kinexus-assistant/dist/
 
 # Optional local tooling caches
 .vite/
+
+.run/
+docs/
+journal/
+reference/
+
+
+

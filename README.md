@@ -1,262 +1,122 @@
-# karthisnk.github.io
+# Story Atlas
 
-Premium metadata-driven dashboard launcher for interactive mini-sites, designed for GitHub Pages.
+A searchable dashboard of story-driven cards. Each card opens its own dedicated page that tells a story — browsable by title, category, or tags.
 
-## What This Repo Contains
+Live site → **https://karthisnk.github.io**
 
-- `index.html`: Dashboard landing page
-- `assets/data/sites.json`: Single source of truth for experience cards
-- `styles/`: Global tokens, dashboard UI, and motion layers
-- `scripts/dashboard.js`: Rendering, filtering, modal, command palette, transitions
-- `sites/<slug>/`: Mini-site folders (lowercase slugs only)
-- `.nojekyll`: Keeps GitHub Pages from applying Jekyll processing
+---
 
-## Quick Start (Run Locally)
+## What it is
 
-Run these from the repo root unless noted.
+| Feature | Details |
+|---|---|
+| Hero carousel | 3 featured stories rotate automatically |
+| Category filter | 15 categories, horizontal scrollable bar |
+| Search | Filters by title, category, summary, and tags simultaneously |
+| Grid / List view | Toggle between 2-column grid and single-column list |
+| Story page | Each card links to its own `story.html?id=…` page |
 
-1. Build the React mini-site used by the dashboard (Kinexus):
+The site is **plain HTML + CSS + vanilla JS (ES modules)**. There is no build step, no framework, and no dependencies to install for the main site.
 
-```bash
-npm run install:kinexus
-npm run build:kinexus
+---
+
+## Project structure
+
+```
+karthisnk.github.io/
+├── index.html          # Dashboard / landing page
+├── story.html          # Individual story page (driven by ?id= query param)
+├── styles/
+│   └── main.css        # All styles — design tokens, layout, components
+├── scripts/
+│   ├── data.js         # Story data, categories, color map
+│   ├── main.js         # Dashboard logic (carousel, filters, search, cards)
+│   └── story.js        # Story page logic
+└── docs/
+    └── CATEGORIES.md   # Source of truth for the 15 category names
 ```
 
-2. Start a local static server for the whole repo:
+---
+
+## Run locally
+
+Because the scripts use **ES modules** (`type="module"`), the files must be served over HTTP — opening `index.html` directly from the file system will not work in most browsers.
+
+### Option 1 — Python (no install required, comes with macOS / Linux)
 
 ```bash
-npm run serve
+# Python 3
+python3 -m http.server 8080
 ```
 
-3. Open:
+Then open **http://localhost:8080** in your browser.
 
-- `http://localhost:8080/` (dashboard)
-
-Why this is required:
-
-- The dashboard fetches `assets/data/sites.json`, which does not work reliably over `file://` URLs.
-- The Kinexus card points to built output under `sites/kinexus-assistant/dist/index.html`.
-
-### One-Command Local Start
-
-If you want install + build + serve in one command:
+### Option 2 — Node.js `serve` (one-time global install)
 
 ```bash
-npm run local
+npx serve .
 ```
 
-## Root Helper Scripts
+Then open the URL printed in the terminal (usually **http://localhost:3000**).
 
-Root `package.json` includes:
+### Option 3 — VS Code Live Server extension
 
-- `npm run install:kinexus`: install dependencies for `sites/kinexus-assistant`
-- `npm run build:kinexus`: build Kinexus production output
-- `npm run dev:kinexus`: run Kinexus Vite dev server
-- `npm run serve`: serve repo root at `localhost:8080`
-- `npm run local`: install + build + serve in sequence
+1. Install the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) extension.
+2. Right-click `index.html` in the Explorer and choose **Open with Live Server**.
 
-## Build Checklist Before Commit
+---
 
-1. If dashboard-only changes: refresh local server and verify cards/filtering/modal/palette.
-2. If `sites/kinexus-assistant/src/*` changed: run `npm run build:kinexus`.
-3. Verify all card links in dashboard open correctly.
-4. Verify no case mismatch in paths (`kinexus-assistant`, not `Kinexus-assistant`).
+## How to add or edit stories
 
-## Metadata Model (`assets/data/sites.json`)
+All story data lives in `scripts/data.js`. Each entry looks like this:
 
-Each card is rendered from metadata. Required fields:
-
-- `id`: Unique id
-- `slug`: Lowercase slug used for folder naming
-- `title`: Card and modal title
-- `description`: Grid description
-- `path`: Destination URL
-- `tags`: String array used for filters
-- `category`: Category filter value
-- `status`: Status pill value
-- `featured`: Boolean for featured row inclusion
-
-Optional fields:
-
-- `longDescription`: Modal detail text
-- `icon`: Icon key (`orbit`, `cloud`, `spark`, `graph`, `wrench`, `flask`)
-- `stack`: Technology labels shown in modal
-
-Example entry:
-
-```json
+```js
 {
-	"id": "my-new-site",
-	"slug": "my-new-site",
-	"title": "My New Site",
-	"description": "Short card summary.",
-	"longDescription": "Longer modal summary.",
-	"path": "./sites/my-new-site/index.html",
-	"tags": ["AI", "Demo"],
-	"category": "Prototype",
-	"status": "New",
-	"featured": false,
-	"icon": "spark",
-	"stack": ["HTML", "CSS", "JavaScript"]
+  id: "my-story-id",           // URL-safe unique ID (used in ?id= query param)
+  title: "My Story Title",
+  summary: "One or two sentence description shown on the card.",
+  category: "Cloud",           // Must match one of the 15 categories exactly
+  tags: ["Tag1", "Tag2"],      // Shown as pills on the card and story page
+  image: "https://...",        // Thumbnail shown on the card (any image URL)
+  featured: true,              // Optional — shows this card in the hero carousel
 }
 ```
 
-## Add A New Mini-Site
+**Categories** are defined in `docs/CATEGORIES.md` and mirrored in the `categories` array at the top of `data.js`. Keep both in sync when adding a new category.
 
-### Option A: Static Mini-Site (HTML/CSS/JS)
+To mark a story as **featured** (hero carousel), set `featured: true`. The carousel uses the first 3 featured stories and cycles through them automatically.
 
-1. Create folder:
+---
 
-```bash
-mkdir -p sites/<new-lowercase-slug>
-```
+## How to write a story page
 
-2. Add at minimum `sites/<new-lowercase-slug>/index.html`.
-3. Add metadata entry in `assets/data/sites.json`.
-4. Use path:
+The story page currently renders mock placeholder text from `story.js`. When you are ready to add real content for a card:
 
-- `"path": "./sites/<new-lowercase-slug>/index.html"`
+1. Open `scripts/story.js`.
+2. Find the `storyBody.innerHTML` block inside the `else` branch.
+3. Replace the placeholder HTML with real narrative content for that story.
 
-5. Refresh dashboard and verify discoverability via search/tags.
+A future improvement will move story body content into `data.js` (or separate Markdown files) so each story has its own self-contained content block.
 
-### Option B: React/Vite Mini-Site
+---
 
-1. Scaffold inside `sites/<new-lowercase-slug>/`.
-2. Configure Vite `base` for GitHub Pages subpath.
-3. Build output with `npm run build`.
-4. Point dashboard metadata `path` to built entry (usually `dist/index.html`).
-5. Verify local navigation from dashboard card.
+## Deployment
 
-## Edit Existing Site (Safe Workflow)
+The site deploys automatically to GitHub Pages on every push to `main` via the workflow in `.github/workflows/deploy-pages.yml`. No manual steps are needed — just push and the site updates within ~30 seconds.
 
-### Edit Dashboard Itself
+If you fork this repo and want to enable GitHub Pages on your fork:
 
-Files you usually touch:
+1. Go to **Settings → Pages** in your forked repo.
+2. Set Source to **GitHub Actions**.
+3. Push any change to `main` to trigger the first deploy.
 
-- `index.html`
-- `styles/global.css`
-- `styles/dashboard.css`
-- `styles/motion.css`
-- `scripts/dashboard.js`
-- `assets/data/sites.json`
+---
 
-Workflow:
+## Contributing
 
-1. Keep local server running (`npm run serve`).
-2. Edit files.
-3. Refresh browser.
-4. Validate:
+1. **Fork** the repo and create a branch: `git checkout -b feature/my-change`
+2. Run locally with any method above.
+3. Make your changes — stories, styles, or layout.
+4. Open a **Pull Request** against `main`.
 
-- featured cards
-- filters/search
-- modal opens/closes
-- command palette opens with `Cmd+K` / `/`
-- card links navigate correctly
-
-### Edit Static Mini-Site
-
-1. Edit files under `sites/<slug>/`.
-2. Refresh browser on that site URL.
-3. No build step required.
-
-### Edit Kinexus React Mini-Site
-
-Project path:
-
-- `sites/kinexus-assistant/`
-
-Commands:
-
-```bash
-cd sites/kinexus-assistant
-npm run dev
-```
-
-Or from repo root:
-
-```bash
-npm run dev:kinexus
-```
-
-For production/dashboard verification:
-
-```bash
-npm run build:kinexus
-```
-
-Then refresh dashboard and open Kinexus card.
-
-## Update Existing Site Metadata
-
-If you want to change title, tags, category, status, or destination:
-
-1. Edit corresponding object in `assets/data/sites.json`.
-2. Keep values consistent:
-
-- lowercase `slug`
-- valid `path`
-- meaningful short `description`
-- accurate `tags` for filtering
-
-3. Refresh dashboard and verify:
-
-- card appears in expected section
-- filter chips and search can find it
-- modal content reflects updates
-- link opens intended destination
-
-## Kinexus React Mini-Site
-
-`sites/kinexus-assistant/` now uses Vite + React + Tailwind.
-
-- Install: `cd sites/kinexus-assistant && npm install`
-- Dev: `npm run dev`
-- Build: `npm run build`
-- Preview: `npm run preview`
-
-### GitHub Pages Path
-
-The Kinexus Vite config uses a relative base:
-
-- `base: "./"`
-
-This keeps the built site working both when served locally from `localhost:8080` and when hosted from a subdirectory on GitHub Pages.
-
-## Common Issues and Fixes
-
-1. Dashboard loads but cards are empty:
-
-- Ensure server is running via HTTP (not opening `index.html` directly).
-- Validate JSON syntax in `assets/data/sites.json`.
-
-2. Card click gives 404:
-
-- Check `path` in metadata.
-- Check folder/file casing exactly (GitHub Pages is case-sensitive).
-
-3. Kinexus card fails after source edits:
-
-- Rebuild Kinexus:
-
-```bash
-npm run build:kinexus
-```
-
-4. Command palette shortcut not working:
-
-- Click page once to focus document, then use `Cmd+K` (Mac) or `Ctrl+K`.
-
-## Suggested Personal Release Routine
-
-Use this every time before pushing:
-
-1. `npm run serve` from repo root.
-2. Build Kinexus if touched: `npm run build:kinexus`.
-3. Test dashboard top-to-bottom.
-4. Test all cards open valid pages.
-5. Commit with clear message (for example: `feat: add <site-slug> dashboard entry`).
-
-## Notes
-
-- Lowercase slugs are mandatory to prevent case-sensitive path issues on GitHub Pages.
-- `.nojekyll` is present to avoid Jekyll processing conflicts.
+Code style: plain JS (no TypeScript, no bundler). Keep it dependency-free unless there is a strong reason not to.

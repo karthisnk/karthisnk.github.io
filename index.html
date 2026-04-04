@@ -1,119 +1,119 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Karthi Nexus | Experience Dashboard</title>
-        <meta
-            name="description"
-            content="A premium launcher for interactive AI, design, and systems experiences."
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-            rel="stylesheet"
-        />
-        <link rel="stylesheet" href="./styles/global.css" />
-        <link rel="stylesheet" href="./styles/dashboard.css" />
-        <link rel="stylesheet" href="./styles/motion.css" />
-    </head>
-    <body>
-        <div class="ambient-layer" aria-hidden="true"></div>
-        <div class="noise-layer" aria-hidden="true"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Karthi's Design Book</title>
+    <meta name="description" content="Searchable story cards by title, category, and tags. Each card opens a dedicated story page." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
 
-        <main id="top" class="dashboard-shell">
-            <div class="controls surface reveal page-header-controls" aria-label="Experience filters">
-                <label class="search-wrap" for="search-input">
-                    <span class="search-label">Search</span>
-                    <input
-                        id="search-input"
-                        name="search"
-                        type="search"
-                        placeholder="Find by title or description"
-                        autocomplete="off"
-                    />
-                </label>
+    <!-- ─── Header ─────────────────────────────────────────── -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <span class="site-name">System Design</span>
+        <div class="header-actions">
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+            <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+          <a href="https://github.com/karthisnk" class="gh-icon-link" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.483 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.031 1.531 1.031.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.682-.103-.254-.446-1.27.098-2.646 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.376.202 2.392.1 2.646.64.698 1.027 1.591 1.027 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.338-.012 2.417-.012 2.747 0 .268.18.58.688.482A10.003 10.003 0 0 0 22 12c0-5.523-4.477-10-10-10z"/>
+          </svg>
+        </a>
+        </div>
+      </div>
+    </header>
 
-                <div class="select-wrap">
-                    <label for="category-filter">Category</label>
-                    <select id="category-filter" name="category"></select>
-                </div>
-
-                <div class="select-wrap">
-                    <label for="status-filter">Status</label>
-                    <select id="status-filter" name="status"></select>
-                </div>
-
-                <button id="clear-filters" class="btn btn-ghost" type="button">Clear Filters</button>
-            </div>
-
-            <section class="section reveal" id="featured-experiences" aria-labelledby="featured-title">
-                <div class="section-head">
-                    <h2 id="featured-title">Featured Experiences</h2>
-                    <p>Start here for the most important demos in the collection.</p>
-                </div>
-                <div id="featured-grid" class="featured-grid" role="list"></div>
-            </section>
-
-            <section class="section reveal" id="all-experiences" aria-labelledby="all-title">
-                <div class="section-head">
-                    <h2 id="all-title">All Experiences</h2>
-                    <p>Search and filter by focus area, category, and status.</p>
-                </div>
-
-                <div class="tag-region">
-                    <p class="tag-title">Filter by Tags</p>
-                    <div id="tag-chips" class="tag-chips" role="toolbar" aria-label="Tag filters"></div>
-                </div>
-
-                <p id="results-summary" class="results-summary" aria-live="polite"></p>
-                <div id="all-grid" class="all-grid" role="list"></div>
-
-                <div id="empty-state" class="empty-state surface" hidden>
-                    <h3>No matches found</h3>
-                    <p>Try fewer filters or clear the search to see all experiences.</p>
-                    <button id="empty-reset" class="btn btn-primary" type="button">Reset Filters</button>
-                </div>
-            </section>
-        </main>
-
-        <footer class="site-footer">
-            <p>Built for GitHub Pages • Metadata-first architecture • Motion with restraint</p>
-            <a href="#top">Back to top</a>
-        </footer>
-
-        <dialog id="preview-modal" class="preview-modal" aria-labelledby="preview-title">
-            <article class="preview-content surface">
-                <button id="preview-close" class="icon-btn" type="button" aria-label="Close preview">x</button>
-                <p id="preview-status" class="status-pill"></p>
-                <h3 id="preview-title"></h3>
-                <p id="preview-description"></p>
-                <div id="preview-tags" class="modal-tags"></div>
-                <p id="preview-meta" class="preview-meta"></p>
-                <div class="preview-actions">
-                    <a id="preview-open" class="btn btn-primary" href="#">Open Experience</a>
-                    <button id="preview-cancel" class="btn btn-ghost" type="button">Close</button>
-                </div>
-            </article>
-        </dialog>
-
-        <dialog id="command-palette" class="palette" aria-labelledby="palette-title">
-            <article class="palette-content surface">
-                <div class="palette-head">
-                    <h3 id="palette-title">Command Palette</h3>
-                    <button id="palette-close" class="icon-btn" type="button" aria-label="Close command palette">x</button>
-                </div>
-                <label for="palette-input" class="sr-only">Search experiences</label>
-                <input id="palette-input" type="search" placeholder="Type to jump to an experience" autocomplete="off" />
-                <ul id="palette-results" class="palette-results"></ul>
-            </article>
-        </dialog>
-
-        <div id="page-transition" class="page-transition" aria-hidden="true">
-            <span>Opening Experience</span>
+    <!-- ─── Hero Carousel ──────────────────────────────────── -->
+    <section class="hero-section" aria-label="Featured stories">
+      <div class="container hero-inner">
+        <!-- Big featured card (left) -->
+        <div class="hero-main-card" id="heroMainCard" role="article">
+          <div class="hero-media" aria-hidden="true">
+            <img id="heroImage" class="hero-image" src="" alt="" loading="eager" />
+          </div>
+          <div class="hero-body">
+            <div class="hero-tag-row" id="heroTagRow"></div>
+            <h1 class="hero-title" id="heroTitle">Loading…</h1>
+            <p class="hero-desc" id="heroDesc"></p>
+            <div class="hero-tech-tags" id="heroTechTags"></div>
+          </div>
+          <a class="hero-card-link" id="heroCardLink" href="story.html" aria-label="Open story"></a>
         </div>
 
-        <script src="./scripts/dashboard.js" type="module"></script>
-    </body>
+        <!-- 2 mini cards (right) -->
+        <div class="hero-mini-stack" id="heroMiniStack"></div>
+      </div>
+
+      <!-- Carousel dots -->
+      <div class="carousel-dots" id="carouselDots" role="tablist" aria-label="Carousel slides"></div>
+    </section>
+
+    <!-- ─── Filters ────────────────────────────────────────── -->
+    <section class="filter-section" aria-label="Filters">
+      <div class="container">
+
+        <!-- Category scroll bar -->
+        <div class="category-bar" role="navigation" aria-label="Category filter">
+          <button class="scroll-btn" id="scrollPrev" aria-label="Scroll categories left">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="category-scroll" id="categoryScroll" role="list"></div>
+          <button class="scroll-btn" id="scrollNext" aria-label="Scroll categories right">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+        <!-- Search + controls -->
+        <div class="search-controls-row">
+          <label class="search-field" for="searchInput">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="searchInput" type="search" placeholder="Search architecture, patterns, or tools…" autocomplete="off" />
+          </label>
+          <div class="controls-right">
+            <div class="view-toggle" role="group" aria-label="View mode">
+              <button class="view-btn active" id="viewGrid" data-view="grid" aria-pressed="true" title="Grid view">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              </button>
+              <button class="view-btn" id="viewList" data-view="list" aria-pressed="false" title="List view">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="4" width="18" height="3" rx="1"/><rect x="3" y="10.5" width="18" height="3" rx="1"/><rect x="3" y="17" width="18" height="3" rx="1"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="reset-row">
+          <span id="resultMeta" class="result-meta"></span>
+          <button class="reset-btn" id="resetBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>
+            Reset
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── Cards Section ─────────────────────────────────── -->
+    <main class="cards-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Recently Added</h2>
+          <a href="#" class="view-all-link">View full history →</a>
+        </div>
+        <div class="card-grid" id="cardGrid" role="list"></div>
+
+        <!-- Empty state -->
+        <p class="empty-state hidden" id="emptyState">No cards matched your search. Try a different term or reset the filters.</p>
+      </div>
+    </main>
+
+    <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+    <script type="module" src="scripts/main.js"></script>
+  </body>
 </html>
