@@ -27,7 +27,7 @@ const resultMeta   = document.getElementById("resultMeta");
 const themeToggle  = document.getElementById("themeToggle");
 
 /* ─── Theme ────────────────────────────────────────── */
-// Default to dark; stored preference wins; system preference also respected
+// Default to dark; stored preference overrides on return visits
 const storedTheme  = localStorage.getItem("theme");
 const initialTheme = storedTheme || "dark"; // dark is the default on first visit
 document.documentElement.setAttribute("data-theme", initialTheme);

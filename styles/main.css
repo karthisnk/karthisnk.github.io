@@ -319,14 +319,17 @@ a { color: inherit; }
   transition: background var(--t-fast), border-color var(--t-fast);
 }
 
-/* Invisible full-card click overlay — only active when JS has set a real href */
+/* Invisible full-card click overlay — inert until JS sets a real href.
+   When _applyHeroContent() sets the [href] attribute, the CSS rule below
+   enables pointer-events automatically via the attribute selector. */
 .hero-card-link {
   position: absolute;
   inset: 0;
   z-index: 3;
   border-radius: inherit;
-  pointer-events: none; /* disabled by default; JS sets href which re-enables via CSS below */
+  pointer-events: none; /* disabled by default; no href = not navigable */
 }
+/* Re-enable clicks only once JS has set a valid story URL */
 .hero-card-link[href] {
   pointer-events: auto;
 }
