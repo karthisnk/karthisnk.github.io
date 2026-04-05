@@ -42,27 +42,44 @@ karthisnk.github.io/
 
 Because the scripts use **ES modules** (`type="module"`), the files must be served over HTTP — opening `index.html` directly from the file system will not work in most browsers.
 
+> **No build step required.** This is a static site — there is no `npm install`, `npm run build`, or compile step. After editing any file, stop the server (`Ctrl+C`), restart it with the command below, and refresh your browser.
+
 ### Option 1 — Python (no install required, comes with macOS / Linux)
 
 ```bash
-# Python 3
+# Start (or restart after code changes)
 python3 -m http.server 8080
 ```
 
 Then open **http://localhost:8080** in your browser.
 
-### Option 2 — Node.js `serve` (one-time global install)
+### Option 2 — Node.js `serve`
 
 ```bash
+# One-time global install (skip if already installed)
+npm install -g serve
+
+# Start (or restart after code changes)
 npx serve .
 ```
 
 Then open the URL printed in the terminal (usually **http://localhost:3000**).
 
-### Option 3 — VS Code Live Server extension
+> **Important:** A `serve.json` file at the project root sets `"cleanUrls": false`. This is required — without it, `serve` strips `.html` extensions and query strings from URLs (e.g. `story.html?id=api-contract-story` becomes `/story` with no ID), causing every story page to show "not available".
+
+### After making code changes
+
+Since there is no compilation or bundling:
+
+1. Stop the running server with **`Ctrl+C`**
+2. Restart it with one of the commands above
+3. **Hard-refresh** your browser (`Cmd+Shift+R` on macOS / `Ctrl+Shift+R` on Windows/Linux) to clear any cached JS/CSS
+
+### Option 3 — VS Code Live Server extension (auto-reloads on save)
 
 1. Install the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) extension.
 2. Right-click `index.html` in the Explorer and choose **Open with Live Server**.
+3. The browser reloads automatically whenever you save a file — no manual restart needed.
 
 ---
 
