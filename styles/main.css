@@ -319,12 +319,16 @@ a { color: inherit; }
   transition: background var(--t-fast), border-color var(--t-fast);
 }
 
-/* Invisible full-card click overlay */
+/* Invisible full-card click overlay — only active when JS has set a real href */
 .hero-card-link {
   position: absolute;
   inset: 0;
   z-index: 3;
   border-radius: inherit;
+  pointer-events: none; /* disabled by default; JS sets href which re-enables via CSS below */
+}
+.hero-card-link[href] {
+  pointer-events: auto;
 }
 
 /* ── Mini card stack (right column) ── */

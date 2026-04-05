@@ -1,7 +1,7 @@
 import { getStoryById, categoryColor } from "./data.js";
 
 /* ─── Theme ────────────────────────────────────────── */
-const savedTheme = localStorage.getItem("theme") || "light";
+const savedTheme = localStorage.getItem("theme") || "dark";
 document.documentElement.setAttribute("data-theme", savedTheme);
 document.getElementById("themeToggle")?.addEventListener("click", () => {
   const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
