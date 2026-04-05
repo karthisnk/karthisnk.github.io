@@ -28,9 +28,8 @@ const themeToggle  = document.getElementById("themeToggle");
 
 /* ─── Theme ────────────────────────────────────────── */
 // Default to dark; stored preference wins; system preference also respected
-const storedTheme = localStorage.getItem("theme");
-const prefersDark  = window.matchMedia("(prefers-color-scheme: dark)").matches;
-const initialTheme = storedTheme || (prefersDark ? "dark" : "dark"); // dark as default
+const storedTheme  = localStorage.getItem("theme");
+const initialTheme = storedTheme || "dark"; // dark is the default on first visit
 document.documentElement.setAttribute("data-theme", initialTheme);
 
 themeToggle?.addEventListener("click", () => {
@@ -58,7 +57,11 @@ const featured = getFeaturedStories();
 /* ─── Helpers ─────────────────────────────────────── */
 const MAX_VISIBLE_TAGS = 5; // max tags shown before "+N" button
 
-/** Build inline style for a colorful category chip */
+/**
+ * Build inline style for a colorful category chip using the category's brand color.
+ * Appends hex alpha suffixes: '1a' (~10% opacity) for background fill,
+ * '40' (~25% opacity) for the border, full color for text.
+ */
 function chipStyle(color) {
   return `background:${color}1a;border:1px solid ${color}40;color:${color}`;
 }
