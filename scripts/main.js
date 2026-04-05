@@ -19,7 +19,6 @@ const scrollNext     = document.getElementById("scrollNext");
 const searchInput  = document.getElementById("searchInput");
 const viewGrid     = document.getElementById("viewGrid");
 const viewList     = document.getElementById("viewList");
-const expandToggle = document.getElementById("expandToggle");
 const resetBtn     = document.getElementById("resetBtn");
 const cardGrid     = document.getElementById("cardGrid");
 const emptyState   = document.getElementById("emptyState");
@@ -50,9 +49,7 @@ let activeCategory = "All";
 let searchTerm     = "";
 let currentView    = "grid";
 let carouselIndex  = 0;
-let expandModeOn   = false;
-
-const featured = getFeaturedStories();
+const featured = getFeaturedStories().slice(0, 3);
 
 /* ─── Helpers ─────────────────────────────────────── */
 const MAX_VISIBLE_TAGS = 5; // max tags shown before "+N" button
@@ -234,30 +231,6 @@ resetBtn.addEventListener("click", () => {
   renderCards();
 });
 
-/* ── Expand mode toggle ── */
-expandToggle?.addEventListener("click", () => {
-  expandModeOn = !expandModeOn;
-  expandToggle.setAttribute("aria-pressed", String(expandModeOn));
-  expandToggle.classList.toggle("active", expandModeOn);
-  cardGrid.classList.toggle("expand-mode", expandModeOn);
-});
-
-/* ─── Per-card expand click ──────────────────────── */
-cardGrid.addEventListener("click", e => {
-  const btn = e.target.closest(".card-expand-btn");
-  if (!btn) return;
-  e.preventDefault();
-  e.stopPropagation();
-  const card = btn.closest(".story-card");
-  if (!card) return;
-  card.classList.toggle("is-expanded");
-  const expanded = card.classList.contains("is-expanded");
-  btn.setAttribute("aria-label", expanded ? "Collapse card" : "Expand card");
-  btn.querySelector(".card-expand-icon").innerHTML = expanded
-    ? `<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/>`
-    : `<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>`;
-});
-
 /* ─── Per-card tag expand click ────────────────────── */
 cardGrid.addEventListener("click", e => {
   const btn = e.target.closest(".card-tag-more");
@@ -360,9 +333,6 @@ function renderCards() {
         <div class="card-tag-row" data-story-id="${story.id}">${tagRowInner}</div>
       </div>
       ${imgHtml}
-      <button class="card-expand-btn" aria-label="Expand card">
-        <svg class="card-expand-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-      </button>
     `;
 
     cardGrid.appendChild(a);
@@ -405,6 +375,19 @@ function observeMiniCards() {
 /* ═══════════════════════════════════════════════════
    Init
    ═══════════════════════════════════════════════════ */
+
+// Read deep-link params set by story page chips (?category=X or ?tag=X)
+(function applyUrlFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const urlCategory = params.get("category");
+  const urlTag      = params.get("tag");
+  if (urlCategory) activeCategory = urlCategory;
+  if (urlTag) {
+    searchTerm = urlTag.toLowerCase();
+    if (searchInput) searchInput.value = urlTag;
+  }
+})();
+
 buildDots();
 renderHero(0);
 buildCategories();

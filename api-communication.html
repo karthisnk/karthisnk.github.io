@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gRPC, WebSocket & Webhook | Karthi's Design Book</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>body{margin:0;background:#0a0a0a}#root{min-height:100vh}</style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useRef, createContext, useContext } = React;
+
+    /* ─── Inline SVG Icon Components ─────────────────────────────── */
+    const Ic = ({ size=24, sw=2, className='', fill='none', children, ...r }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
+           fill={fill} stroke="currentColor" strokeWidth={sw} strokeLinecap="round"
+           strokeLinejoin="round" className={className} aria-hidden="true" {...r}>{children}</svg>
+    );
+    const ArrowLeft   = p => <Ic {...p}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></Ic>;
+    const ChevLeft    = p => <Ic {...p}><polyline points="15 18 9 12 15 6"/></Ic>;
+    const ChevRight   = p => <Ic {...p}><polyline points="9 18 15 12 9 6"/></Ic>;
+    const Grid        = p => <Ic {...p}><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></Ic>;
+    const PlayCircle  = p => <Ic {...p}><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/></Ic>;
+    const Server      = p => <Ic {...p}><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></Ic>;
+    const Zap         = p => <Ic {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></Ic>;
+    const Code        = p => <Ic {...p}><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></Ic>;
+    const Shield      = p => <Ic {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></Ic>;
+    const ShieldCheck = p => <Ic {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></Ic>;
+    const Bell        = p => <Ic {...p}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></Ic>;
+    const Lock        = p => <Ic {...p}><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></Ic>;
+    const RefreshCw   = p => <Ic {...p}><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></Ic>;
+    const LinkIcon    = p => <Ic {...p}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></Ic>;
+    const Globe       = p => <Ic {...p}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></Ic>;
+    const FileCode    = p => <Ic {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="10 13 8 15 10 17"/><polyline points="14 13 16 15 14 17"/></Ic>;
+    const Terminal    = p => <Ic {...p}><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></Ic>;
+    const Package     = p => <Ic {...p}><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></Ic>;
+    const HelpCircle  = p => <Ic {...p}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></Ic>;
+    const Info        = p => <Ic {...p}><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></Ic>;
+    const Magnet      = p => <Ic {...p}><path d="M6 15A6 6 0 0 0 6 3a6 6 0 0 0 0 12z" fill="none"/><path d="M6 3v4a2 2 0 0 0 4 0V3"/><line x1="6" y1="19" x2="6" y2="15"/><line x1="10" y1="19" x2="10" y2="14"/></Ic>;
+
+    /* ─── Context ──────────────────────────────────────────────────── */
+    const MagneticContext = createContext(false);
+    const WhatIsContext   = createContext(false);
+
+    /* ─── Global Styles ───────────────────────────────────────────── */
+    const globalStyles = `
+      @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+      .fade-in { animation: fadeIn 0.5s ease forwards; }
+      .scrollbar-hide { -ms-overflow-style:none; scrollbar-width:none; }
+      .scrollbar-hide::-webkit-scrollbar { display:none; }
+      a { text-decoration: none; }
+    `;
+
+    /* ─── MagneticNode ────────────────────────────────────────────── */
+    function MagneticNode({ children, className = '' }) {
+      const enabled = useContext(MagneticContext);
+      const ref = useRef(null);
+      const onMove = e => {
+        if (!enabled || !ref.current) return;
+        const b = ref.current.getBoundingClientRect();
+        const x = (e.clientX - b.left - b.width/2) * 0.18;
+        const y = (e.clientY - b.top  - b.height/2) * 0.18;
+        ref.current.style.transform = `translate(${x}px,${y}px)`;
+      };
+      const onLeave = () => { if (ref.current) ref.current.style.transform = ''; };
+      return <div ref={ref} className={className} onMouseMove={onMove} onMouseLeave={onLeave}>{children}</div>;
+    }
+
+    /* ─── Concepts Data ────────────────────────────────────────────── */
+    const CONCEPTS = [
+      {
+        category: 'gRPC',
+        color: '#6366f1',
+        icon: <Server size={20}/>,
+        items: [
+          { name: 'Protocol Buffers', icon: <Code size={28}/>,      desc: 'Binary serialization schema by Google. Defined in .proto files. 3–10× more compact than JSON and significantly faster to encode/decode. The wire format for all gRPC calls.' },
+          { name: 'HTTP/2 Transport', icon: <Zap size={28}/>,       desc: 'gRPC multiplexes many calls over a single HTTP/2 connection with header compression and no head-of-line blocking — unlike HTTP/1.1.' },
+          { name: 'Bidirectional Streaming', icon: <RefreshCw size={28}/>, desc: 'Client and server push independent streams simultaneously on one connection. Ideal for ML inference, log tailing, and real-time location tracking between microservices.' },
+          { name: 'Service Definition (.proto)', icon: <FileCode size={28}/>, desc: 'You write a .proto contract. Both sides auto-generate type-safe client stubs in their language. No hand-written REST docs, no runtime parsing guesswork.' },
+          { name: 'Code Generation (protoc)', icon: <Terminal size={28}/>, desc: 'The protoc compiler turns .proto schemas into idiomatic client stubs for Go, Java, Python, Node, C#, Swift, Dart — enabling polyglot microservices with shared contracts.' },
+        ],
+      },
+      {
+        category: 'WebSocket',
+        color: '#10b981',
+        icon: <LinkIcon size={20}/>,
+        items: [
+          { name: 'Persistent Connection', icon: <LinkIcon size={28}/>, desc: 'Unlike HTTP, a WebSocket connection stays open after the handshake. The TCP channel is held alive — no reconnect overhead, no repeated negotiation.' },
+          { name: 'Full-Duplex', icon: <RefreshCw size={28}/>,      desc: 'Both sides send messages independently and simultaneously with no turn-taking. The server pushes updates the instant they exist — without a client request.' },
+          { name: 'HTTP Upgrade Handshake', icon: <Globe size={28}/>, desc: 'Starts as a normal HTTP GET with Upgrade: websocket header. Server replies 101 Switching Protocols. The TCP connection then upgrades to the WebSocket protocol.' },
+          { name: 'WSS (Secure WebSocket)', icon: <Lock size={28}/>,  desc: 'WebSocket over TLS. wss:// is to WebSocket what https:// is to HTTP. Required for any production deployment that crosses the public internet.' },
+          { name: 'Event-Driven Messaging', icon: <Bell size={28}/>,  desc: 'Apps react to incoming messages via onmessage event handlers. The server fires events as they happen — clients don\'t poll, they listen.' },
+        ],
+      },
+      {
+        category: 'Webhook',
+        color: '#f59e0b',
+        icon: <Zap size={20}/>,
+        items: [
+          { name: 'HTTP Callbacks', icon: <RefreshCw size={28}/>,    desc: 'A user-defined HTTP endpoint that a 3rd-party service calls when an event occurs. You provide the URL; the service POSTs to it. Completely passive on your side.' },
+          { name: 'Event Triggers', icon: <Bell size={28}/>,         desc: 'Payment completed, PR merged, file uploaded — each trigger type maps to a Webhook registration. You subscribe to exactly the events you care about.' },
+          { name: 'Payload / POST Body', icon: <Package size={28}/>, desc: 'The service sends event data as a JSON body in the HTTP POST. Your endpoint parses it, processes it, and returns 2xx to acknowledge receipt.' },
+          { name: 'HMAC Signature', icon: <ShieldCheck size={28}/>,  desc: 'To prevent spoofed events, senders compute an HMAC-SHA256 of the payload using a shared secret and send it in a header. Verify it before trusting the body.' },
+          { name: 'Retry & Idempotency', icon: <RefreshCw size={28}/>, desc: 'If your endpoint times out or returns non-2xx, well-behaved services retry with exponential backoff. Make handlers idempotent — the same event may arrive more than once.' },
+        ],
+      },
+    ];
+
+    /* ─── Story Steps ──────────────────────────────────────────────── */
+    const STEPS = [
+      {
+        id: 'overview',   protocol: 'overview',
+        badge: 'Overview', badgeColor: '#64748b',
+        title: 'Three Ways Systems Talk',
+        text: 'gRPC, WebSocket, Webhook — three architecturally distinct answers to the same question: how should one system communicate with another? Each solves a different coordination problem.',
+      },
+      {
+        id: 'http',       protocol: 'http',
+        badge: 'Baseline', badgeColor: '#64748b',
+        title: 'HTTP: Ask, Wait, Respond',
+        text: 'The baseline all three build on. The client always initiates — sends a request, waits, receives a response, connection closes. Clean and stateless, but one exchange at a time.',
+      },
+      {
+        id: 'grpc-proto', protocol: 'grpc-proto',
+        badge: 'gRPC  ①', badgeColor: '#6366f1',
+        title: 'Define Your API in .proto',
+        text: 'gRPC starts with a contract: a .proto file that defines services, methods, and message shapes. Both sides auto-generate type-safe stubs. No hand-written REST docs. No parsing guesswork.',
+      },
+      {
+        id: 'grpc-call',  protocol: 'grpc-call',
+        badge: 'gRPC  ②', badgeColor: '#6366f1',
+        title: 'Binary Calls, 5× Faster Than JSON',
+        text: 'Messages serialize with Protocol Buffers — a compact binary format up to 5× faster than JSON. Multiple calls fly in parallel over one HTTP/2 connection with no head-of-line blocking.',
+      },
+      {
+        id: 'grpc-stream', protocol: 'grpc-stream',
+        badge: 'gRPC  ③', badgeColor: '#6366f1',
+        title: 'Bidirectional Streaming',
+        text: 'One HTTP/2 connection, unlimited simultaneous streams in both directions. Client streams data while receiving results concurrently. Ideal for ML inference, telemetry, and real-time location.',
+      },
+      {
+        id: 'ws-handshake', protocol: 'ws-handshake',
+        badge: 'WebSocket ①', badgeColor: '#10b981',
+        title: 'One HTTP Upgrade, Permanent Channel',
+        text: 'WebSocket starts as a normal HTTP GET with an Upgrade header. Server replies 101 Switching Protocols. The TCP connection is now held open indefinitely — a persistent full-duplex channel.',
+      },
+      {
+        id: 'ws-live',    protocol: 'ws-live',
+        badge: 'WebSocket ②', badgeColor: '#10b981',
+        title: 'Messages Flow Without Asking',
+        text: 'No request-response cycle. Both sides push messages whenever they want. Server pushes updates the instant they happen. Perfect for chat, live dashboards, gaming, collaborative editing.',
+      },
+      {
+        id: 'webhook-register', protocol: 'webhook-register',
+        badge: 'Webhook ①', badgeColor: '#f59e0b',
+        title: 'Leave Your URL & Walk Away',
+        text: 'Webhook flips the model. Instead of polling for updates, you register a callback URL: "POST to this address when something happens." Then you go offline and wait.',
+      },
+      {
+        id: 'webhook-fire', protocol: 'webhook-fire',
+        badge: 'Webhook ②', badgeColor: '#f59e0b',
+        title: 'The Service Calls You',
+        text: 'Payment received. PR merged. Order shipped. The service POSTs to your URL with the event payload. You process it, return 200. No polling, no wasted connections. Pure event-driven.',
+      },
+      {
+        id: 'decision',   protocol: 'decision',
+        badge: 'Decision Guide', badgeColor: '#64748b',
+        title: 'Pick the Right Tool',
+        text: 'gRPC for high-throughput microservice-to-microservice RPC. WebSocket for realtime bidirectional browser–server communication. Webhook for async event callbacks from services you don\'t control.',
+      },
+    ];
+
+    /* ─── Flow Canvas ──────────────────────────────────────────────── */
+    /* Fixed SVG path IDs — paths don't change, only animated elements remount */
+    const PATHS = {
+      c2s:         "M 143,112 C 280,93  480,93  617,112",
+      s2c:         "M 617,138 C 480,157 280,157 143,138",
+      ovGrpcC2s:   "M 133,68  C 280,54  480,54  627,68",
+      ovGrpcS2c:   "M 627,84  C 480,98  280,98  133,84",
+      ovWsC2s:     "M 133,152 C 280,138 480,138 627,152",
+      ovWsS2c:     "M 627,168 C 480,182 280,182 133,168",
+      ovWhS2c:     "M 627,252 C 480,266 280,266 133,252",
+    };
+
+    function FlowCanvas({ proto, animKey }) {
+      const INDIGO = '#6366f1', EMERALD = '#10b981', AMBER = '#f59e0b', SLATE = '#64748b';
+      const isOverview = proto === 'overview';
+      const isDecision = proto === 'decision';
+      const chColor = proto.startsWith('grpc') ? INDIGO
+                    : proto.startsWith('ws')   ? EMERALD
+                    : proto.includes('webhook') ? AMBER : SLATE;
+
+      const leftLabel  = proto.includes('ws')      ? 'Browser'
+                       : proto.includes('webhook') ? 'Your App' : 'Client';
+      const rightLabel = proto.includes('webhook') ? '3rd Party' : 'Server';
+
+      const protoLabel = proto === 'http'          ? 'HTTP/1.1 · Request → Response'
+                       : proto.startsWith('grpc')  ? 'gRPC · HTTP/2 · Protocol Buffers'
+                       : proto.startsWith('ws')    ? 'WebSocket · ws:// · Full-Duplex'
+                       : proto.includes('webhook') ? 'Webhook · HTTP POST · Event-Driven' : '';
+
+      return (
+        <svg
+          viewBox={isOverview ? "0 0 760 310" : isDecision ? "0 0 760 260" : "0 0 760 230"}
+          className="w-full h-full"
+          style={{ overflow: 'visible', fontFamily: 'Inter, sans-serif' }}
+        >
+          <defs>
+            <path id="fc-c2s"       d={PATHS.c2s}/>
+            <path id="fc-s2c"       d={PATHS.s2c}/>
+            <path id="fc-ov-gc2s"   d={PATHS.ovGrpcC2s}/>
+            <path id="fc-ov-gs2c"   d={PATHS.ovGrpcS2c}/>
+            <path id="fc-ov-wsc2s"  d={PATHS.ovWsC2s}/>
+            <path id="fc-ov-wss2c"  d={PATHS.ovWsS2c}/>
+            <path id="fc-ov-whs2c"  d={PATHS.ovWhS2c}/>
+          </defs>
+
+          {/* ── Overview: 3-lane layout ── */}
+          {isOverview && (
+            <>
+              {/* gRPC lane */}
+              <text x="380" y="42" textAnchor="middle" fill={INDIGO} fontSize="9" fontWeight="700" letterSpacing="0.14em">gRPC · BIDIRECTIONAL · HTTP/2</text>
+              <rect x="10" y="50" width="123" height="40" rx="8" fill="#1e1b4b" stroke={INDIGO} strokeWidth="1.2"/>
+              <text x="71" y="74" textAnchor="middle" fill="white" fontSize="11" fontWeight="600">Client</text>
+              <rect x="627" y="50" width="123" height="40" rx="8" fill="#1e1b4b" stroke={INDIGO} strokeWidth="1.2"/>
+              <text x="688" y="74" textAnchor="middle" fill="white" fontSize="11" fontWeight="600">Server</text>
+              <path d={PATHS.ovGrpcC2s} fill="none" stroke={INDIGO} strokeWidth="0.6" strokeOpacity="0.25" strokeDasharray="5 4"/>
+              <path d={PATHS.ovGrpcS2c} fill="none" stroke={INDIGO} strokeWidth="0.6" strokeOpacity="0.25" strokeDasharray="5 4"/>
+
+              {/* WebSocket lane */}
+              <text x="380" y="128" textAnchor="middle" fill={EMERALD} fontSize="9" fontWeight="700" letterSpacing="0.14em">WebSocket · PERSISTENT · FULL-DUPLEX</text>
+              <rect x="10" y="135" width="123" height="40" rx="8" fill="#022c22" stroke={EMERALD} strokeWidth="1.2"/>
+              <text x="71" y="159" textAnchor="middle" fill="white" fontSize="11" fontWeight="600">Browser</text>
+              <rect x="627" y="135" width="123" height="40" rx="8" fill="#022c22" stroke={EMERALD} strokeWidth="1.2"/>
+              <text x="688" y="159" textAnchor="middle" fill="white" fontSize="11" fontWeight="600">Server</text>
+              <line x1="133" y1="160" x2="627" y2="160" stroke={EMERALD} strokeWidth="2" strokeOpacity="0.2"/>
+
+              {/* Webhook lane */}
+              <text x="380" y="225" textAnchor="middle" fill={AMBER} fontSize="9" fontWeight="700" letterSpacing="0.14em">Webhook · EVENT-DRIVEN · SERVER INITIATES</text>
+              <rect x="10" y="232" width="123" height="40" rx="8" fill="#451a03" stroke={AMBER} strokeWidth="1.2"/>
+              <text x="71" y="256" textAnchor="middle" fill="white" fontSize="11" fontWeight="600">Your App</text>
+              <rect x="627" y="232" width="123" height="40" rx="8" fill="#451a03" stroke={AMBER} strokeWidth="1.2"/>
+              <text x="688" y="256" textAnchor="middle" fill="white" fontSize="11" fontWeight="600">Service</text>
+              <path d={PATHS.ovWhS2c} fill="none" stroke={AMBER} strokeWidth="0.6" strokeOpacity="0.25" strokeDasharray="5 4"/>
+
+              {/* Animated particles (keyed group to restart) */}
+              <g key={`ov-${animKey}`}>
+                {[0,.55,1.1].map((d,i) => <circle key={i}    r="5" fill={INDIGO}><animateMotion dur="1.8s" begin={`${d}s`} repeatCount="indefinite"><mpath href="#fc-ov-gc2s" xlinkHref="#fc-ov-gc2s"/></animateMotion></circle>)}
+                {[.3,.85,1.4].map((d,i) => <circle key={i+3} r="5" fill={INDIGO} opacity="0.65"><animateMotion dur="1.8s" begin={`${d}s`} repeatCount="indefinite"><mpath href="#fc-ov-gs2c" xlinkHref="#fc-ov-gs2c"/></animateMotion></circle>)}
+                {[0,.5,1,1.5,2].map((d,i) => <circle key={i+6}  r="5" fill={EMERALD} opacity="0.9"><animateMotion dur="2s" begin={`${d}s`} repeatCount="indefinite"><mpath href="#fc-ov-wsc2s" xlinkHref="#fc-ov-wsc2s"/></animateMotion></circle>)}
+                {[.25,.75,1.25,1.75,2.25].map((d,i) => <circle key={i+11} r="5" fill={EMERALD} opacity="0.65"><animateMotion dur="2s" begin={`${d}s`} repeatCount="indefinite"><mpath href="#fc-ov-wss2c" xlinkHref="#fc-ov-wss2c"/></animateMotion></circle>)}
+                {[0,1.6,3.2].map((d,i) => <circle key={i+16} r="6" fill={AMBER}><animateMotion dur="2.2s" begin={`${d}s`} repeatCount="indefinite"><mpath href="#fc-ov-whs2c" xlinkHref="#fc-ov-whs2c"/></animateMotion></circle>)}
+              </g>
+            </>
+          )}
+
+          {/* ── Decision: 3 cards ── */}
+          {isDecision && (
+            <>
+              {[
+                { x:10,  color:INDIGO,  bg:'#1e1b4b', name:'gRPC',      when:'Server-to-Server RPC',       note:'Microservices · Low Latency · Binary' },
+                { x:263, color:EMERALD, bg:'#022c22', name:'WebSocket',  when:'Realtime Browser ↔ Server',  note:'Chat · Live Dashboards · Gaming' },
+                { x:516, color:AMBER,   bg:'#451a03', name:'Webhook',    when:'Async Event Callback',       note:'Payments · CI/CD · Notifications' },
+              ].map(({ x, color, bg, name, when, note }) => (
+                <g key={name}>
+                  <rect x={x} y="20" width="230" height="210" rx="14" fill={bg} stroke={color} strokeWidth="1.5"/>
+                  <rect x={x+15} y="45" width="200" height="55" rx="8" fill={`${color}18`} stroke={`${color}30`} strokeWidth="1"/>
+                  <text x={x+115} y="78" textAnchor="middle" fill={color} fontSize="18" fontWeight="900">{name}</text>
+                  <line x1={x+15} y1="115" x2={x+215} y2="115" stroke={color} strokeWidth="0.5" strokeOpacity="0.3"/>
+                  <text x={x+115} y="140" textAnchor="middle" fill="white" fontSize="12" fontWeight="700">{when}</text>
+                  <text x={x+115} y="162" textAnchor="middle" fill="#6b7280" fontSize="10">{note}</text>
+                  <text x={x+115} y="208" textAnchor="middle" fill={color} fontSize="9" fontWeight="600" letterSpacing="0.1em">USE WHEN THIS IS YOUR SCENARIO ↑</text>
+                </g>
+              ))}
+            </>
+          )}
+
+          {/* ── Single-protocol layout ── */}
+          {!isOverview && !isDecision && (
+            <>
+              {/* Client box */}
+              <rect x="10" y="87" width="133" height="56" rx="10" fill="#111827" stroke={chColor} strokeWidth="1.5" strokeOpacity="0.7"/>
+              <text x="76" y="116" textAnchor="middle" fill="white" fontSize="13" fontWeight="700">{leftLabel}</text>
+              <text x="76" y="132" textAnchor="middle" fill="#6b7280" fontSize="10">
+                {proto.includes('webhook') ? '← receives POST' : '→ initiates call'}
+              </text>
+
+              {/* Server box */}
+              <rect x="617" y="87" width="133" height="56" rx="10" fill="#111827" stroke={chColor} strokeWidth="1.5" strokeOpacity="0.7"/>
+              <text x="683" y="116" textAnchor="middle" fill="white" fontSize="13" fontWeight="700">{rightLabel}</text>
+              <text x="683" y="132" textAnchor="middle" fill="#6b7280" fontSize="10">
+                {proto.includes('webhook') ? '→ sends event' : '← processes & responds'}
+              </text>
+
+              {/* Dashed guide paths */}
+              <path d={PATHS.c2s} fill="none" stroke={chColor} strokeWidth="0.8" strokeOpacity="0.12" strokeDasharray="5 4"/>
+              <path d={PATHS.s2c} fill="none" stroke={chColor} strokeWidth="0.8" strokeOpacity="0.12" strokeDasharray="5 4"/>
+
+              {/* WebSocket persistent channel bar */}
+              {proto === 'ws-live' && (
+                <line x1="143" y1="125" x2="617" y2="125" stroke={EMERALD} strokeWidth="3" strokeOpacity="0.35"/>
+              )}
+
+              {/* Protocol label */}
+              <text x="380" y="200" textAnchor="middle" fill={chColor} fontSize="9" fontWeight="700" letterSpacing="0.14em" opacity="0.55">
+                {protoLabel}
+              </text>
+
+              {/* Animated packets — keyed <g> restarts animations on step change */}
+              <g key={`pkt-${animKey}`}>
+                <PacketGroup proto={proto} INDIGO={INDIGO} EMERALD={EMERALD} AMBER={AMBER} SLATE={SLATE}/>
+              </g>
+            </>
+          )}
+        </svg>
+      );
+    }
+
+    function PacketGroup({ proto, INDIGO, EMERALD, AMBER, SLATE }) {
+      const c2s = "#fc-c2s", s2c = "#fc-s2c";
+
+      /* HTTP baseline */
+      if (proto === 'http') return (
+        <>
+          <circle r="9" fill={SLATE}>
+            <animateMotion dur="2s" repeatCount="indefinite" begin="0s"><mpath href={c2s} xlinkHref={c2s}/></animateMotion>
+          </circle>
+          <circle r="9" fill="#1e293b" stroke={SLATE} strokeWidth="1.5">
+            <animateMotion dur="2s" repeatCount="indefinite" begin="2.8s"><mpath href={s2c} xlinkHref={s2c}/></animateMotion>
+          </circle>
+        </>
+      );
+
+      /* gRPC .proto definition — one labeled rectangular "schema" packet */
+      if (proto === 'grpc-proto') return (
+        <>
+          {[0, 1.0, 2.0].map((d, i) => (
+            <rect key={i} x="-14" y="-6" width="28" height="12" rx="3" fill={INDIGO} opacity="0.85">
+              <animateMotion dur="2.2s" begin={`${d}s`} repeatCount="indefinite"><mpath href={c2s} xlinkHref={c2s}/></animateMotion>
+            </rect>
+          ))}
+        </>
+      );
+
+      /* gRPC unary call — compact binary packets both ways */
+      if (proto === 'grpc-call') return (
+        <>
+          {[0, 0.55, 1.1].map((d, i) => (
+            <rect key={i}   x="-8" y="-5" width="16" height="10" rx="2" fill={INDIGO}>
+              <animateMotion dur="1.6s" begin={`${d}s`} repeatCount="indefinite"><mpath href={c2s} xlinkHref={c2s}/></animateMotion>
+            </rect>
+          ))}
+          {[0.8, 1.35, 1.9].map((d, i) => (
+            <rect key={i+3} x="-8" y="-5" width="16" height="10" rx="2" fill={INDIGO} opacity="0.65">
+              <animateMotion dur="1.6s" begin={`${d}s`} repeatCount="indefinite"><mpath href={s2c} xlinkHref={s2c}/></animateMotion>
+            </rect>
+          ))}
+        </>
+      );
+
+      /* gRPC bidirectional streaming — dense flow both ways */
+      if (proto === 'grpc-stream') return (
+        <>
+          {[0, 0.35, 0.7, 1.05, 1.4, 1.75].map((d, i) => (
+            <circle key={i}   r="6" fill={INDIGO} opacity="0.9">
+              <animateMotion dur="2s" begin={`${d}s`} repeatCount="indefinite"><mpath href={c2s} xlinkHref={c2s}/></animateMotion>
+            </circle>
+          ))}
+          {[0.18, 0.53, 0.88, 1.23, 1.58, 1.93].map((d, i) => (
+            <circle key={i+6} r="6" fill={INDIGO} opacity="0.6">
+              <animateMotion dur="2s" begin={`${d}s`} repeatCount="indefinite"><mpath href={s2c} xlinkHref={s2c}/></animateMotion>
+            </circle>
+          ))}
+        </>
+      );
+
+      /* WebSocket handshake — HTTP request then 101 response, then steady pulses */
+      if (proto === 'ws-handshake') return (
+        <>
+          <circle r="9" fill={EMERALD} opacity="0.9">
+            <animateMotion dur="2.2s" repeatCount="indefinite" begin="0s"><mpath href={c2s} xlinkHref={c2s}/></animateMotion>
+          </circle>
+          <circle r="9" fill="#065f46" stroke={EMERALD} strokeWidth="2">
+            <animateMotion dur="2.2s" repeatCount="indefinite" begin="2.8s"><mpath href={s2c} xlinkHref={s2c}/></animateMotion>
+          </circle>
+        </>
+      );
+
+      /* WebSocket live — continuous bidirectional flow */
+      if (proto === 'ws-live') return (
+        <>
+          {[0, 0.45, 0.9, 1.35, 1.8].map((d, i) => (
+            <circle key={i}   r="6" fill={EMERALD} opacity="0.9">
+              <animateMotion dur="2.5s" begin={`${d}s`} repeatCount="indefinite"><mpath href={c2s} xlinkHref={c2s}/></animateMotion>
+            </circle>
+          ))}
+          {[0.22, 0.67, 1.12, 1.57, 2.02].map((d, i) => (
+            <circle key={i+5} r="6" fill={EMERALD} opacity="0.65">
+              <animateMotion dur="2.5s" begin={`${d}s`} repeatCount="indefinite"><mpath href={s2c} xlinkHref={s2c}/></animateMotion>
+            </circle>
+          ))}
+        </>
+      );
+
+      /* Webhook register — client POSTs registration to service */
+      if (proto === 'webhook-register') return (
+        <>
+          {[0, 1.4, 2.8].map((d, i) => (
+            <circle key={i} r="9" fill={AMBER} opacity="0.85">
+              <animateMotion dur="2s" begin={`${d}s`} repeatCount="indefinite"><mpath href={c2s} xlinkHref={c2s}/></animateMotion>
+            </circle>
+          ))}
+        </>
+      );
+
+      /* Webhook fire — service calls client (reversed direction!) */
+      if (proto === 'webhook-fire') return (
+        <>
+          {[0, 1.8, 3.6].map((d, i) => (
+            <circle key={i} r="10" fill={AMBER}>
+              <animateMotion dur="2.2s" begin={`${d}s`} repeatCount="indefinite"><mpath href={s2c} xlinkHref={s2c}/></animateMotion>
+            </circle>
+          ))}
+        </>
+      );
+
+      return null;
+    }
+
+    /* ─── Landing View ─────────────────────────────────────────────── */
+    function LandingView({ onSelect }) {
+      const protoChain = [
+        ['gRPC','#6366f1'],['→','#2d2d2d'],['WebSocket','#10b981'],['→','#2d2d2d'],['Webhook','#f59e0b']
+      ];
+      return (
+        <div className="flex-1 flex flex-col items-center justify-center p-6 fade-in">
+          <MagneticNode>
+            <div className="text-center mb-12">
+              <div className="flex items-center justify-center gap-5 mb-6">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
+                     style={{background:'rgba(99,102,241,0.15)', border:'1px solid rgba(99,102,241,0.3)'}}>
+                  <Server size={32} className="text-indigo-400"/>
+                </div>
+                <div className="text-left">
+                  <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight">
+                    gRPC, WebSocket<br/><span className="text-indigo-400">& Webhook</span>
+                  </h1>
+                </div>
+              </div>
+              <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto font-light leading-relaxed">
+                Three communication patterns. Three different problems solved.<br/>
+                <span className="text-gray-600">Know exactly when to reach for each one.</span>
+              </p>
+
+              {/* Protocol era chain */}
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
+                {protoChain.map(([label, color], i) => (
+                  <span key={i} style={{color, fontSize:'11px', fontWeight:700, letterSpacing:'0.08em'}}>{label}</span>
+                ))}
+              </div>
+
+              {/* Category deep-link chips */}
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-8">
+                <span className="text-[10px] text-gray-600 uppercase tracking-widest">Topics:</span>
+                {[
+                  {label:'API and Web Development', color:'#2563eb'},
+                  {label:'How it Works?',           color:'#16a34a'},
+                  {label:'Software Design',         color:'#db2777'},
+                ].map(({label, color}) => (
+                  <a key={label} href={`index.html?category=${encodeURIComponent(label)}`}
+                     style={{textDecoration:'none', background:`${color}22`, border:`1px solid ${color}55`, color}}
+                     className="px-3 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase hover:opacity-80 transition-opacity">
+                    {label}
+                  </a>
+                ))}
+              </div>
+
+              {/* Tag chips */}
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
+                <span className="text-[10px] text-gray-600 uppercase tracking-widest">Tags:</span>
+                {['gRPC','WebSocket','Webhook','Protocol Buffers','HTTP/2','Protobuf','Full-Duplex','HTTP Callbacks','HMAC','Event-Driven','Microservices','REST'].map(tag => (
+                  <a key={tag} href={`index.html?tag=${encodeURIComponent(tag)}`}
+                     className="px-2.5 py-0.5 rounded-full text-[11px] font-medium hover:text-white transition-all"
+                     style={{textDecoration:'none', background:'rgba(255,255,255,0.05)', color:'#9ca3af', border:'1px solid rgba(255,255,255,0.1)'}}>
+                    {tag}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </MagneticNode>
+
+          <div className="flex flex-col md:flex-row gap-6 w-full max-w-3xl px-4">
+            <MagneticNode className="flex-1">
+              <button onClick={() => onSelect('patterns')}
+                      className="group w-full relative bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-3xl p-8 hover:border-gray-500 transition-all duration-500 overflow-hidden">
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                     style={{background:'rgba(99,102,241,0.08)'}}/>
+                <div className="relative z-10 flex flex-col items-center text-center">
+                  <div className="w-20 h-20 bg-gray-800 rounded-2xl flex items-center justify-center mb-6 shadow-xl">
+                    <Grid size={40} className="text-gray-300 group-hover:text-white transition-colors"/>
+                  </div>
+                  <h2 className="text-2xl font-bold mb-3">Browse Patterns</h2>
+                  <p className="text-gray-500 group-hover:text-gray-300 transition-colors">
+                    Explore every concept — Protocol Buffers, HTTP/2, full-duplex, HMAC signatures, retry logic, and more.
+                  </p>
+                </div>
+              </button>
+            </MagneticNode>
+
+            <MagneticNode className="flex-1">
+              <button onClick={() => onSelect('story')}
+                      className="group w-full relative bg-gradient-to-br from-indigo-950/40 to-black border border-indigo-700/30 rounded-3xl p-8 hover:border-indigo-500 transition-all duration-500 overflow-hidden"
+                      style={{boxShadow:'0 0 30px rgba(99,102,241,0.08)'}}>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                     style={{background:'rgba(99,102,241,0.1)'}}/>
+                <div className="relative z-10 flex flex-col items-center text-center">
+                  <div className="w-20 h-20 rounded-2xl flex items-center justify-center mb-6"
+                       style={{background:'#6366f1', boxShadow:'0 0 40px rgba(99,102,241,0.4)'}}>
+                    <PlayCircle size={44} className="text-white"/>
+                  </div>
+                  <h2 className="text-2xl font-bold mb-3">Watch the Flow</h2>
+                  <p className="text-gray-400 group-hover:text-gray-200 transition-colors">
+                    Animated client↔server packet flows showing each protocol in action — step by step.
+                  </p>
+                </div>
+              </button>
+            </MagneticNode>
+          </div>
+        </div>
+      );
+    }
+
+    /* ─── Patterns View ────────────────────────────────────────────── */
+    function PatternsView({ onBack }) {
+      return (
+        <div className="flex-1 flex flex-col h-full overflow-y-auto fade-in scrollbar-hide p-6 md:p-12 pb-32">
+          <div className="max-w-6xl mx-auto w-full">
+            <button onClick={onBack} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8 group text-sm">
+              <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform"/> Back to Home
+            </button>
+            <h2 className="text-4xl md:text-5xl font-black mb-3 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+                   style={{background:'rgba(99,102,241,0.15)', border:'1px solid rgba(99,102,241,0.3)'}}>
+                <Grid size={22} className="text-indigo-400"/>
+              </div>
+              API Communication Patterns
+            </h2>
+            <p className="text-gray-500 mb-12 text-base">Every concept and technology across the three communication styles.</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 pb-20">
+              {CONCEPTS.map((group, idx) => (
+                <div key={idx} className="bg-black/40 backdrop-blur-md border border-gray-800 rounded-3xl p-8 hover:border-gray-700 transition-colors">
+                  <div className="flex items-center gap-3 mb-8 pb-4 border-b border-gray-800">
+                    <div className="p-2 rounded-lg bg-gray-900" style={{color: group.color}}>{group.icon}</div>
+                    <h3 className="text-xl font-bold" style={{color: group.color}}>{group.category}</h3>
+                  </div>
+                  <div className="space-y-6">
+                    {group.items.map((item, i) => (
+                      <div key={i} className="flex items-start gap-4">
+                        <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                             style={{background:`${group.color}15`, border:`1px solid ${group.color}30`, color:group.color}}>
+                          {item.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-sm mb-1 text-white">{item.name}</div>
+                          <div className="text-xs text-gray-500 leading-relaxed">{item.desc}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* ─── Story View ───────────────────────────────────────────────── */
+    function StoryView({ onFinish }) {
+      const [step, setStep] = useState(0);
+      const [animKey, setAnimKey] = useState(0);
+
+      const goTo = n => { setStep(n); setAnimKey(k => k + 1); };
+      const prev = () => { if (step > 0) goTo(step - 1); };
+      const next = () => { if (step < STEPS.length - 1) goTo(step + 1); else onFinish(); };
+
+      const s = STEPS[step];
+
+      return (
+        <div className="flex-1 flex flex-col h-screen overflow-hidden fade-in">
+          {/* Top bar */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800/60 flex-shrink-0">
+            <button onClick={onFinish}
+                    className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors group text-sm">
+              <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform"/> Back
+            </button>
+            <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-widest"
+                  style={{background:`${s.badgeColor}20`, color:s.badgeColor, border:`1px solid ${s.badgeColor}40`}}>
+              {s.badge}
+            </span>
+            <span className="text-gray-600 text-sm font-mono tabular-nums">{step + 1} / {STEPS.length}</span>
+          </div>
+
+          {/* Body: left narrative + right canvas */}
+          <div className="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0">
+            {/* Left: text + nav */}
+            <div className="md:w-[38%] flex flex-col justify-between p-7 border-b md:border-b-0 md:border-r border-gray-800/40 flex-shrink-0">
+              <div>
+                <h2 className="text-2xl md:text-[1.7rem] font-black mb-4 leading-tight">{s.title}</h2>
+                <p className="text-gray-300 text-sm md:text-base leading-relaxed">{s.text}</p>
+              </div>
+
+              {/* Navigation */}
+              <div className="flex items-center gap-3 mt-6">
+                <button onClick={prev} disabled={step === 0}
+                        className="p-2 rounded-full border border-gray-700 text-gray-400 hover:text-white hover:border-gray-500 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                  <ChevLeft size={18}/>
+                </button>
+
+                {/* Step dots */}
+                <div className="flex gap-1.5 flex-1 justify-center flex-wrap">
+                  {STEPS.map((st, i) => (
+                    <button key={i} onClick={() => goTo(i)} title={st.title}
+                            className="rounded-full transition-all duration-300 hover:opacity-80"
+                            style={{
+                              width: i === step ? '20px' : '8px',
+                              height: '8px',
+                              background: i === step ? s.badgeColor : i < step ? '#374151' : '#1f2937'
+                            }}/>
+                  ))}
+                </div>
+
+                <button onClick={next}
+                        className="p-2 rounded-full border text-gray-400 hover:text-white transition-all"
+                        style={{
+                          borderColor: step === STEPS.length - 1 ? `${s.badgeColor}60` : '#374151',
+                          color: step === STEPS.length - 1 ? s.badgeColor : undefined,
+                        }}>
+                  <ChevRight size={18}/>
+                </button>
+              </div>
+            </div>
+
+            {/* Right: animated SVG canvas */}
+            <div className="flex-1 flex items-center justify-center p-6 md:p-10 bg-black/20 overflow-hidden">
+              <div className="w-full max-w-2xl">
+                <FlowCanvas proto={s.protocol} animKey={animKey}/>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* ─── Main App ─────────────────────────────────────────────────── */
+    function APICommPortal() {
+      const [view,  setView]  = useState('landing');
+      const [mag,   setMag]   = useState(false);
+      const [wtIs,  setWtIs]  = useState(false);
+      const [toast, setToast] = useState(false);
+
+      const toggleWtIs = () => {
+        const next = !wtIs;
+        setWtIs(next);
+        if (next) { setToast(true); setTimeout(() => setToast(false), 4500); }
+      };
+
+      return (
+        <MagneticContext.Provider value={mag}>
+          <WhatIsContext.Provider value={wtIs}>
+            <div className="min-h-screen w-full text-white font-sans overflow-hidden flex flex-col"
+                 style={{background:'#0a0a0a', fontFamily:'Inter, system-ui, sans-serif'}}>
+              <style>{globalStyles}</style>
+
+              {/* Radial gradient background */}
+              <div className="absolute inset-0 pointer-events-none z-0">
+                <div className="absolute inset-0 opacity-60"
+                     style={{background:'radial-gradient(ellipse at 25% 25%, #1e1b4b 0%, #0a0a0a 55%)'}}/>
+              </div>
+
+              {/* Dashboard back link */}
+              <a href="index.html"
+                 className="fixed top-4 right-4 z-[100] flex items-center gap-2 bg-black/70 backdrop-blur-md border border-gray-700 px-4 py-2 rounded-full text-sm font-semibold text-gray-300 hover:text-white hover:bg-gray-800/90 hover:border-gray-500 transition-all">
+                <ArrowLeft size={14}/> Dashboard
+              </a>
+
+              <div className="relative z-10 w-full flex flex-col flex-1">
+                {view === 'landing'  && <LandingView  onSelect={setView}/>}
+                {view === 'patterns' && <PatternsView onBack={() => setView('landing')}/>}
+                {view === 'story'    && <StoryView    onFinish={() => setView('landing')}/>}
+              </div>
+
+              {/* Bottom-left toggles */}
+              <div className="fixed bottom-6 left-6 z-50 flex flex-col gap-3">
+                {toast && (
+                  <div className="absolute bottom-full left-0 mb-3 w-max bg-blue-900/95 border border-blue-600 text-blue-100 px-4 py-3 rounded-xl text-sm shadow-2xl flex items-center gap-3">
+                    <Info size={16} className="text-blue-400 flex-shrink-0"/>
+                    <span className="font-medium">Hover any icon to learn what it does!</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-3">
+                  <button onClick={() => setMag(!mag)}
+                          className="flex items-center gap-2 px-4 py-2 rounded-full border backdrop-blur-md transition-all duration-300"
+                          style={mag ? {background:'rgba(99,102,241,0.15)', borderColor:'rgba(99,102,241,0.5)', color:'white'} : {background:'rgba(0,0,0,0.5)', borderColor:'#374151', color:'#9ca3af'}}>
+                    <Magnet size={16} style={mag ? {color:'#818cf8'} : {}}/>
+                    <span className="text-xs font-semibold uppercase tracking-wider">Magnetic: {mag ? 'ON' : 'OFF'}</span>
+                  </button>
+
+                  <button onClick={toggleWtIs}
+                          className="flex items-center gap-2 px-4 py-2 rounded-full border backdrop-blur-md transition-all duration-300"
+                          style={wtIs ? {background:'rgba(37,99,235,0.15)', borderColor:'rgba(59,130,246,0.5)', color:'white'} : {background:'rgba(0,0,0,0.5)', borderColor:'#374151', color:'#9ca3af'}}>
+                    <HelpCircle size={16} style={wtIs ? {color:'#60a5fa'} : {}}/>
+                    <span className="text-xs font-semibold uppercase tracking-wider">What Is: {wtIs ? 'ON' : 'OFF'}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </WhatIsContext.Provider>
+        </MagneticContext.Provider>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<APICommPortal/>);
+  </script>
+</body>
+</html>

@@ -515,6 +515,33 @@
               <p className="mt-4 text-gray-400 text-lg md:text-xl max-w-xl mx-auto font-light">
                 Uncover the globally distributed architecture that streams billions of hours of video to the world.
               </p>
+
+              {/* Dashboard deep-link chips */}
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-8">
+                <span className="text-[10px] text-gray-600 uppercase tracking-widest">Topics:</span>
+                {[
+                  {label:'Real World Studies', color:'#0891b2'},
+                  {label:'How it Works?', color:'#16a34a'},
+                  {label:'Software Design', color:'#db2777'},
+                ].map(({label,color}) => (
+                  <a key={label}
+                     href={`index.html?category=${encodeURIComponent(label)}`}
+                     style={{textDecoration:'none',background:`${color}22`,border:`1px solid ${color}55`,color}}
+                     className="px-3 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase hover:opacity-80 transition-opacity">
+                    {label}
+                  </a>
+                ))}
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
+                <span className="text-[10px] text-gray-600 uppercase tracking-widest">Tags:</span>
+                {['Swift','Kotlin','React','HTML5','JavaScript','GraphQL','Spring Boot','Zuul','Eureka','MySQL','Cassandra','CockroachDB','AWS S3','Kafka','Apache Flink','CloudFront','Open Connect','Apache Spark','Redshift','Tableau','Apache Druid','JIRA','Confluence','Jenkins','Gradle','Spinnaker','REST','gRPC','WebSocket','Netflix Titus','Netflix Atlas','Chaos Monkey'].map(tag => (
+                  <a key={tag}
+                     href={`index.html?tag=${encodeURIComponent(tag)}`}
+                     className="px-2.5 py-0.5 rounded-full text-[11px] font-medium hover:text-white transition-all" style={{textDecoration:'none',background:'rgba(255,255,255,0.05)',color:'#9ca3af',border:'1px solid rgba(255,255,255,0.1)'}}>
+                    {tag}
+                  </a>
+                ))}
+              </div>
             </div>
           </MagneticNode>
 

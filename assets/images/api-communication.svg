@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 220" width="360" height="220">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#1e1b4b"/>
+      <stop offset="60%"  stop-color="#0f0f1a"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </linearGradient>
+    <linearGradient id="indigoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#6366f1" stop-opacity="0"/>
+      <stop offset="30%"  stop-color="#6366f1"/>
+      <stop offset="70%"  stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#10b981" stop-opacity="0"/>
+      <stop offset="30%"  stop-color="#10b981"/>
+      <stop offset="70%"  stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#f59e0b" stop-opacity="0"/>
+      <stop offset="30%"  stop-color="#f59e0b"/>
+      <stop offset="70%"  stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="360" height="220" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- Subtle grid lines -->
+  <line x1="0" y1="55"  x2="360" y2="55"  stroke="white" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="0" y1="110" x2="360" y2="110" stroke="white" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="0" y1="165" x2="360" y2="165" stroke="white" stroke-opacity="0.03" stroke-width="1"/>
+
+  <!-- Title text -->
+  <text x="180" y="26" text-anchor="middle" fill="white" font-size="13" font-weight="800"
+        font-family="Inter, system-ui, sans-serif" letter-spacing="0.02em">gRPC · WebSocket · Webhook</text>
+  <text x="180" y="43" text-anchor="middle" fill="#6b7280" font-size="9" font-weight="500"
+        font-family="Inter, system-ui, sans-serif" letter-spacing="0.12em">THREE COMMUNICATION PATTERNS</text>
+
+  <!-- ─── gRPC Lane ─── -->
+  <!-- Label -->
+  <text x="55" y="70" text-anchor="middle" fill="#6366f1" font-size="8" font-weight="700"
+        font-family="Inter, system-ui, sans-serif" letter-spacing="0.1em">gRPC</text>
+  <!-- Client box -->
+  <rect x="8" y="75" width="44" height="22" rx="5" fill="#1e1b4b" stroke="#6366f1" stroke-width="1.2" stroke-opacity="0.7"/>
+  <text x="30" y="90" text-anchor="middle" fill="white" font-size="7.5" font-weight="600"
+        font-family="Inter, sans-serif">Client</text>
+  <!-- Server box -->
+  <rect x="308" y="75" width="44" height="22" rx="5" fill="#1e1b4b" stroke="#6366f1" stroke-width="1.2" stroke-opacity="0.7"/>
+  <text x="330" y="90" text-anchor="middle" fill="white" font-size="7.5" font-weight="600"
+        font-family="Inter, sans-serif">Server</text>
+  <!-- gRPC path line -->
+  <path d="M 52,84 Q 180,76 308,84" fill="none" stroke="#6366f1" stroke-width="0.8" stroke-opacity="0.2" stroke-dasharray="3 3"/>
+  <path d="M 52,92 Q 180,100 308,92" fill="none" stroke="#6366f1" stroke-width="0.8" stroke-opacity="0.2" stroke-dasharray="3 3"/>
+  <!-- gRPC packets (rectangles = binary) -->
+  <rect x="90"  y="80" width="14" height="8" rx="2" fill="#6366f1" opacity="0.9"/>
+  <rect x="155" y="80" width="14" height="8" rx="2" fill="#6366f1" opacity="0.75"/>
+  <rect x="220" y="80" width="14" height="8" rx="2" fill="#6366f1" opacity="0.6"/>
+  <rect x="110" y="88" width="14" height="8" rx="2" fill="#6366f1" opacity="0.5"/>
+  <rect x="190" y="88" width="14" height="8" rx="2" fill="#6366f1" opacity="0.65"/>
+  <rect x="258" y="88" width="14" height="8" rx="2" fill="#6366f1" opacity="0.4"/>
+
+  <!-- ─── WebSocket Lane ─── -->
+  <text x="55" y="120" text-anchor="middle" fill="#10b981" font-size="8" font-weight="700"
+        font-family="Inter, system-ui, sans-serif" letter-spacing="0.1em">WS</text>
+  <!-- Client box -->
+  <rect x="8" y="127" width="44" height="22" rx="5" fill="#022c22" stroke="#10b981" stroke-width="1.2" stroke-opacity="0.7"/>
+  <text x="30" y="142" text-anchor="middle" fill="white" font-size="7" font-weight="600"
+        font-family="Inter, sans-serif">Browser</text>
+  <!-- Server box -->
+  <rect x="308" y="127" width="44" height="22" rx="5" fill="#022c22" stroke="#10b981" stroke-width="1.2" stroke-opacity="0.7"/>
+  <text x="330" y="142" text-anchor="middle" fill="white" font-size="7.5" font-weight="600"
+        font-family="Inter, sans-serif">Server</text>
+  <!-- Persistent channel line -->
+  <line x1="52" y1="138" x2="308" y2="138" stroke="#10b981" stroke-width="2" stroke-opacity="0.25"/>
+  <!-- WebSocket packets (circles = frames) -->
+  <circle cx="85"  cy="134" r="5" fill="#10b981" opacity="0.9"/>
+  <circle cx="135" cy="134" r="5" fill="#10b981" opacity="0.75"/>
+  <circle cx="185" cy="134" r="5" fill="#10b981" opacity="0.6"/>
+  <circle cx="235" cy="134" r="5" fill="#10b981" opacity="0.45"/>
+  <circle cx="110" cy="143" r="5" fill="#10b981" opacity="0.7"/>
+  <circle cx="160" cy="143" r="5" fill="#10b981" opacity="0.55"/>
+  <circle cx="210" cy="143" r="5" fill="#10b981" opacity="0.4"/>
+  <circle cx="260" cy="143" r="5" fill="#10b981" opacity="0.3"/>
+
+  <!-- ─── Webhook Lane ─── -->
+  <text x="55" y="172" text-anchor="middle" fill="#f59e0b" font-size="8" font-weight="700"
+        font-family="Inter, system-ui, sans-serif" letter-spacing="0.1em">WH</text>
+  <!-- Your App box -->
+  <rect x="8" y="179" width="44" height="22" rx="5" fill="#451a03" stroke="#f59e0b" stroke-width="1.2" stroke-opacity="0.7"/>
+  <text x="30" y="192" text-anchor="middle" fill="white" font-size="6.5" font-weight="600"
+        font-family="Inter, sans-serif">Your App</text>
+  <text x="30" y="199" text-anchor="middle" fill="#d97706" font-size="5.5" font-family="Inter, sans-serif">← receives</text>
+  <!-- Service box -->
+  <rect x="308" y="179" width="44" height="22" rx="5" fill="#451a03" stroke="#f59e0b" stroke-width="1.2" stroke-opacity="0.7"/>
+  <text x="330" y="192" text-anchor="middle" fill="white" font-size="7" font-weight="600"
+        font-family="Inter, sans-serif">Service</text>
+  <text x="330" y="199" text-anchor="middle" fill="#d97706" font-size="5.5" font-family="Inter, sans-serif">→ fires POST</text>
+  <!-- Webhook reversed path -->
+  <path d="M 308,190 Q 180,183 52,190" fill="none" stroke="#f59e0b" stroke-width="0.8" stroke-opacity="0.2" stroke-dasharray="3 3"/>
+  <!-- Webhook packets (server → client direction, larger) -->
+  <circle cx="260" cy="187" r="6.5" fill="#f59e0b" opacity="0.9"/>
+  <circle cx="190" cy="187" r="6.5" fill="#f59e0b" opacity="0.65"/>
+  <circle cx="120" cy="187" r="6.5" fill="#f59e0b" opacity="0.4"/>
+
+  <!-- Arrow indicators -->
+  <!-- gRPC arrows right -->
+  <polygon points="299,82 308,86 299,90" fill="#6366f1" opacity="0.6"/>
+  <!-- WebSocket arrows both ways -->
+  <polygon points="299,133 308,138 299,143" fill="#10b981" opacity="0.5"/>
+  <polygon points="61,133 52,138 61,143"   fill="#10b981" opacity="0.5"/>
+  <!-- Webhook arrow left (reversed) -->
+  <polygon points="61,185 52,190 61,195" fill="#f59e0b" opacity="0.7"/>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="208" width="360" height="12" rx="0" fill="#0a0a0a" style="border-radius: 0 0 12px 12px;"/>
+  <text x="180" y="218" text-anchor="middle" fill="#374151" font-size="7.5" font-family="Inter, system-ui, sans-serif"
+        letter-spacing="0.08em">API COMMUNICATION PATTERNS · DECISION GUIDE</text>
+</svg>

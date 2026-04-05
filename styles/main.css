@@ -566,30 +566,6 @@ a { color: inherit; }
 }
 .view-btn:not(.active):hover { background: var(--hover-bg); }
 
-/* ── Expand mode toggle ── */
-.expand-toggle-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  color: var(--muted);
-  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast), transform var(--t-fast);
-}
-.expand-toggle-btn:hover {
-  background: var(--hover-bg);
-  color: var(--text);
-}
-.expand-toggle-btn.active {
-  background: var(--pill-active-bg);
-  color: var(--pill-active-text);
-  border-color: var(--pill-active-bg);
-}
-
 /* ── Reset row ── */
 .reset-row {
   display: flex;
@@ -677,19 +653,6 @@ a { color: inherit; }
   transform: translateY(-3px) scale(1.006);
   border-color: color-mix(in srgb, var(--brand) 20%, transparent);
   will-change: transform;
-}
-
-/* Expanded card spans full row */
-.story-card.is-expanded {
-  grid-column: 1 / -1;
-  min-height: 200px;
-}
-.story-card.is-expanded .card-desc {
-  -webkit-line-clamp: unset;
-}
-.story-card.is-expanded .card-thumb {
-  width: 180px;
-  height: 160px;
 }
 
 .card-content {
@@ -813,35 +776,6 @@ a { color: inherit; }
 .view-list .card-thumb {
   width: 130px;
   height: 120px;
-}
-
-/* ── Card expand button (shown in expand mode) ── */
-.card-expand-btn {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--muted);
-  cursor: pointer;
-  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast), transform var(--t-fast);
-  z-index: 4;
-}
-.card-expand-btn:hover {
-  background: var(--hover-bg);
-  color: var(--brand);
-  border-color: var(--brand);
-  transform: scale(1.08);
-}
-/* Only show in expand mode */
-.expand-mode .card-expand-btn {
-  display: flex;
 }
 
 /* Empty state */
