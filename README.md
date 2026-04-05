@@ -1,6 +1,6 @@
-# Story Atlas
+# Karthi's Design Book
 
-A searchable dashboard of story-driven cards. Each card opens its own dedicated page that tells a story — browsable by title, category, or tags.
+A searchable dashboard of story-driven cards. Each card opens its own dedicated page that tells a story, browsable by title, category, or tags.
 
 Live site → **https://karthisnk.github.io**
 
