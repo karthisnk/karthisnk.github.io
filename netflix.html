@@ -58,6 +58,122 @@
     const User         = (p) => <Icon {...p}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></Icon>;
     const Laptop       = (p) => <Icon {...p}><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/></Icon>;
     const Smartphone   = (p) => <Icon {...p}><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></Icon>;
+    const Zap          = (p) => <Icon {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></Icon>;
+    const Globe        = (p) => <Icon {...p}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></Icon>;
+    const ArrowRightLeft=(p)=><Icon {...p}><path d="M21 16H3"/><polyline points="15 10 21 16 15 22"/><path d="M3 8h18"/><polyline points="9 2 3 8 9 14"/></Icon>;
+    const Anchor       = (p) => <Icon {...p}><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></Icon>;
+    const Container    = (p) => <Icon {...p}><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><path d="M8 21V11"/><path d="M16 11v10"/></Icon>;
+    const BarChart     = (p) => <Icon {...p}><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></Icon>;
+    const CloudLightning=(p)=><Icon {...p}><path d="M19 16.9A5 5 0 0 0 18 7h-1.26a8 8 0 1 0-11.62 9"/><polyline points="13 11 9 17 15 17 11 23"/></Icon>;
+    const MemoryIcon   = (p) => <Icon {...p}><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h.01M10 12h.01M14 12h.01M18 12h.01"/><path d="M8 6V4m4 2V4m4 2V4M8 18v2m4-2v2m4-2v2"/></Icon>;
+
+    /* ─── Custom Netflix-tool SVG Icons ───────────────────────────── */
+    const TitusIcon = ({ size = 44 }) => (
+      <svg width={size} height={size} viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="44" height="44" rx="8" fill="#1a1a2e"/>
+        <rect x="6" y="20" width="32" height="16" rx="2" fill="none" stroke="#E50914" strokeWidth="1.8"/>
+        <line x1="6" y1="28" x2="38" y2="28" stroke="#E50914" strokeWidth="1.4" strokeDasharray="3 2"/>
+        <rect x="10" y="23" width="6" height="10" rx="1" fill="#E50914" fillOpacity="0.3" stroke="#E50914" strokeWidth="1"/>
+        <rect x="19" y="23" width="6" height="10" rx="1" fill="#E50914" fillOpacity="0.3" stroke="#E50914" strokeWidth="1"/>
+        <rect x="28" y="23" width="6" height="10" rx="1" fill="#E50914" fillOpacity="0.3" stroke="#E50914" strokeWidth="1"/>
+        <path d="M8 36 Q22 42 36 36" fill="none" stroke="#E50914" strokeWidth="2" strokeLinecap="round"/>
+        <line x1="22" y1="8" x2="22" y2="20" stroke="#E50914" strokeWidth="2.5" strokeLinecap="round"/>
+        <line x1="15" y1="8" x2="29" y2="8" stroke="#E50914" strokeWidth="2.5" strokeLinecap="round"/>
+      </svg>
+    );
+
+    const AtlasIcon = ({ size = 44 }) => (
+      <svg width={size} height={size} viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="44" height="44" rx="8" fill="#0f172a"/>
+        <polyline points="5,35 12,20 18,28 25,14 32,24 38,10" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="5" cy="35" r="2" fill="#3b82f6"/>
+        <circle cx="12" cy="20" r="2" fill="#3b82f6"/>
+        <circle cx="18" cy="28" r="2" fill="#3b82f6"/>
+        <circle cx="25" cy="14" r="2" fill="#60a5fa"/>
+        <circle cx="32" cy="24" r="2" fill="#3b82f6"/>
+        <circle cx="38" cy="10" r="2.5" fill="#93c5fd"/>
+        <line x1="5" y1="38" x2="40" y2="38" stroke="#1e3a5f" strokeWidth="1"/>
+        <line x1="5" y1="38" x2="5" y2="5" stroke="#1e3a5f" strokeWidth="1"/>
+      </svg>
+    );
+
+    const ChaosMonkeyIcon = ({ size = 44 }) => (
+      <svg width={size} height={size} viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="44" height="44" rx="8" fill="#1a0505"/>
+        <polygon points="26,4 14,22 21,22 18,40 30,18 23,18" fill="#ef4444" stroke="#fca5a5" strokeWidth="1"/>
+        <line x1="8" y1="10" x2="11" y2="8" stroke="#f97316" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="6" y1="14" x2="10" y2="13" stroke="#f97316" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="36" y1="10" x2="33" y2="8" stroke="#f97316" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="38" y1="14" x2="34" y2="13" stroke="#f97316" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="8" y1="34" x2="11" y2="37" stroke="#f97316" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="36" y1="34" x2="33" y2="37" stroke="#f97316" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    );
+
+    const EVCacheIcon = ({ size = 44 }) => (
+      <svg width={size} height={size} viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="44" height="44" rx="8" fill="#111827"/>
+        <rect x="9" y="9" width="26" height="26" rx="3" fill="none" stroke="#a78bfa" strokeWidth="1.8"/>
+        <rect x="13" y="14" width="18" height="5" rx="1" fill="#a78bfa" fillOpacity="0.2" stroke="#7c3aed" strokeWidth="1"/>
+        <rect x="13" y="22" width="18" height="5" rx="1" fill="#a78bfa" fillOpacity="0.2" stroke="#7c3aed" strokeWidth="1"/>
+        <polygon points="24,16 20,22 23,22 20,28 26,21 22,21" fill="#fbbf24" fillOpacity="0.9"/>
+        <line x1="14" y1="9" x2="14" y2="6" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="22" y1="9" x2="22" y2="6" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="30" y1="9" x2="30" y2="6" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="14" y1="35" x2="14" y2="38" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="22" y1="35" x2="22" y2="38" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="30" y1="35" x2="30" y2="38" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    );
+
+    const GrpcIcon = ({ size = 44 }) => (
+      <svg width={size} height={size} viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="44" height="44" rx="8" fill="#0f1923"/>
+        <path d="M8 16 H36" stroke="#4ade80" strokeWidth="2.2" strokeLinecap="round"/>
+        <polyline points="30,11 36,16 30,21" fill="none" stroke="#4ade80" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M36 28 H8" stroke="#a78bfa" strokeWidth="2.2" strokeLinecap="round"/>
+        <polyline points="14,23 8,28 14,33" fill="none" stroke="#a78bfa" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+        <text x="22" y="42" textAnchor="middle" fontSize="6" fontWeight="bold" fill="#6b7280" fontFamily="monospace">gRPC</text>
+      </svg>
+    );
+
+    const RestIcon = ({ size = 44 }) => (
+      <svg width={size} height={size} viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="44" height="44" rx="8" fill="#052e16"/>
+        <rect x="5" y="14" width="34" height="16" rx="3" fill="none" stroke="#22c55e" strokeWidth="1.8"/>
+        <text x="22" y="26" textAnchor="middle" fontSize="9" fontWeight="900" fill="#22c55e" fontFamily="monospace">REST</text>
+        <line x1="5" y1="9" x2="39" y2="9" stroke="#22c55e" strokeWidth="1" strokeOpacity="0.4"/>
+        <line x1="5" y1="35" x2="39" y2="35" stroke="#22c55e" strokeWidth="1" strokeOpacity="0.4"/>
+        <rect x="6" y="6" width="12" height="5" rx="1" fill="#22c55e" fillOpacity="0.2"/>
+        <text x="12" y="10" textAnchor="middle" fontSize="4" fill="#86efac" fontFamily="monospace">GET</text>
+        <rect x="20" y="6" width="12" height="5" rx="1" fill="#f59e0b" fillOpacity="0.2"/>
+        <text x="26" y="10" textAnchor="middle" fontSize="4" fill="#fcd34d" fontFamily="monospace">POST</text>
+      </svg>
+    );
+
+    const WebSocketIcon = ({ size = 44 }) => (
+      <svg width={size} height={size} viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="44" height="44" rx="8" fill="#0c1a2e"/>
+        <path d="M22 8 A14 14 0 0 1 36 22" stroke="#38bdf8" strokeWidth="2.2" strokeLinecap="round" fill="none"/>
+        <polyline points="34,16 36,22 30,22" fill="none" stroke="#38bdf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M22 36 A14 14 0 0 1 8 22" stroke="#818cf8" strokeWidth="2.2" strokeLinecap="round" fill="none"/>
+        <polyline points="10,28 8,22 14,22" fill="none" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="22" cy="22" r="3" fill="#38bdf8"/>
+        <text x="22" y="43" textAnchor="middle" fontSize="5" fontWeight="bold" fill="#475569" fontFamily="monospace">WS</text>
+      </svg>
+    );
+
+    const OpenConnectIcon = ({ size = 44 }) => (
+      <svg width={size} height={size} viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="44" height="44" rx="8" fill="#1a0505"/>
+        <line x1="22" y1="38" x2="22" y2="14" stroke="#E50914" strokeWidth="3" strokeLinecap="round"/>
+        <line x1="17" y1="38" x2="27" y2="38" stroke="#E50914" strokeWidth="2.5" strokeLinecap="round"/>
+        <path d="M12 20 A12 12 0 0 1 32 20" fill="none" stroke="#E50914" strokeWidth="2" strokeLinecap="round" strokeOpacity="0.6"/>
+        <path d="M8 26 A16 16 0 0 1 36 26" fill="none" stroke="#E50914" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.35"/>
+        <path d="M16 14 A8 8 0 0 1 28 14" fill="none" stroke="#E50914" strokeWidth="2" strokeLinecap="round" strokeOpacity="0.85"/>
+        <text x="22" y="12" textAnchor="middle" fontSize="5" fontWeight="900" fill="#E50914">N</text>
+      </svg>
+    );
 
     /* ─── Global CSS ──────────────────────────────────────────────── */
     const globalStyles = `
@@ -112,6 +228,39 @@
       @keyframes coupleReact { 0%,65%,100%{transform:translateX(0)} 20%{transform:translateX(2px) rotate(-1deg)} 45%{transform:translateX(-1px) rotate(0.5deg)} }
       @keyframes floatEmoji { 0%{opacity:0;transform:translateY(0px) scale(0.6)} 20%{opacity:1;transform:translateY(-4px) scale(1)} 70%{opacity:0.9;transform:translateY(-14px) scale(0.95)} 100%{opacity:0;transform:translateY(-22px) scale(0.7)} }
       @keyframes screenGlow { 0%,100%{opacity:0.22} 50%{opacity:0.45} }
+      @keyframes nodeActivate {
+        0%  { transform: scale(0.92); opacity: 0; }
+        60% { transform: scale(1.04); opacity: 1; }
+        100%{ transform: scale(1);   opacity: 1; }
+      }
+      @keyframes nodeGlow {
+        0%,100% { box-shadow: 0 0 0px 0px rgba(229,9,20,0); }
+        50%     { box-shadow: 0 0 22px 6px rgba(229,9,20,0.45); }
+      }
+      @keyframes nodeGlowBlue {
+        0%,100% { box-shadow: 0 0 0px 0px rgba(99,170,251,0); }
+        50%     { box-shadow: 0 0 18px 5px rgba(99,170,251,0.4); }
+      }
+      @keyframes nodeGlowGreen {
+        0%,100% { box-shadow: 0 0 0px 0px rgba(74,222,128,0); }
+        50%     { box-shadow: 0 0 18px 5px rgba(74,222,128,0.35); }
+      }
+      @keyframes particleTravel {
+        0%   { stroke-dashoffset: 200; opacity: 0; }
+        10%  { opacity: 1; }
+        90%  { opacity: 1; }
+        100% { stroke-dashoffset: 0; opacity: 0; }
+      }
+      .particle-line {
+        stroke-dasharray: 12 188;
+        animation: particleTravel 2s ease-in-out infinite;
+      }
+      .node-activate { animation: nodeActivate 0.5s cubic-bezier(0.2,0.8,0.2,1) forwards; }
+      .diagram-group-active { animation: nodeGlow 2.5s ease-in-out infinite; border-color: rgba(229,9,20,0.5) !important; }
+      .diagram-group-active-blue { animation: nodeGlowBlue 2.5s ease-in-out infinite 0.3s; border-color: rgba(99,170,251,0.5) !important; }
+      .diagram-group-active-green { animation: nodeGlowGreen 2.5s ease-in-out infinite 0.6s; border-color: rgba(74,222,128,0.5) !important; }
+      @keyframes spinSlow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+      @keyframes awsFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
     `;
 
     /* ─── Contexts ────────────────────────────────────────────────── */
@@ -220,52 +369,63 @@
         { name: "HTML5",      slug: "html5",      color: "E34F26", desc: "The standard markup language used to structure and display content seamlessly on the World Wide Web." },
         { name: "JavaScript", slug: "javascript", color: "F7DF1E", desc: "The core programming language of the web that brings interactive and dynamic content to your browser." },
       ]},
-      { category: "API & Backend", icon: <Server />, color: "text-green-400", items: [
-        { name: "GraphQL",       slug: "graphql",  color: "E10098", desc: "A smart data query language that lets apps ask for exactly the data they need, preventing wasted bandwidth." },
-        { name: "Spring Boot",   slug: "springboot", color: "6DB33F", desc: "A Java framework used to build standalone, production-ready backend microservices quickly and securely." },
+      { category: "API & Communication", icon: <Server />, color: "text-green-400", items: [
+        { name: "GraphQL",    slug: "graphql",  color: "E10098", desc: "A smart data query language that lets apps ask for exactly the data they need, preventing wasted bandwidth." },
+        { name: "REST",       slug: null,       color: "22c55e", fallback: RestIcon, desc: "The standard HTTP API style for client-server communication using verbs like GET and POST." },
+        { name: "gRPC",       slug: null,       color: "4ade80", fallback: GrpcIcon, desc: "Google's high-performance RPC framework used by Netflix microservices to talk to each other at massive scale." },
+        { name: "WebSocket",  slug: null,       color: "38bdf8", fallback: WebSocketIcon, desc: "A full-duplex communication protocol enabling real-time, bidirectional connections for live features." },
+        { name: "Spring Boot",slug: "springboot", color: "6DB33F", desc: "A Java framework used to build standalone, production-ready backend microservices quickly and securely." },
         { name: "Netflix Zuul",  slug: "netflix",  color: "E50914", desc: "Netflix's own API gateway that handles routing, filtering, and security for all incoming user traffic." },
         { name: "Netflix Eureka",slug: "netflix",  color: "E50914", desc: "A dynamic service registry (like a phonebook) helping thousands of microservices find and talk to each other." },
       ]},
-      { category: "Databases & Storage", icon: <Database />, color: "text-purple-400", items: [
+      { category: "Databases & Caching", icon: <Database />, color: "text-purple-400", items: [
         { name: "MySQL",       slug: "mysql",          color: "4479A1", desc: "A widely-used relational database management system used for storing highly structured, transactional data." },
         { name: "Cassandra",   slug: "apachecassandra",color: "1287B1", desc: "A highly scalable NoSQL database built to handle massive amounts of data across multiple servers with zero downtime." },
         { name: "CockroachDB", slug: "cockroachlabs",  color: "6933FF", desc: "A distributed SQL database designed for global scale, consistency, and survivability against data center failures." },
-        { name: "AWS S3",      slug: "amazonaws",      color: "569A31", fallback: Database, desc: "Amazon's highly durable cloud storage service, acting as the main vault for Netflix's massive video files." },
+        { name: "EVCache",     slug: null, color: "a78bfa", fallback: EVCacheIcon, desc: "Netflix's distributed in-memory caching layer built on Memcached — cuts database load dramatically for frequently accessed data." },
+        { name: "AWS S3",      slug: "amazonaws", color: "569A31", fallback: Database, desc: "Amazon's highly durable cloud storage service, acting as the main vault for Netflix's massive video files." },
       ]},
-      { category: "Streaming & Messaging", icon: <Activity />, color: "text-red-400", items: [
+      { category: "Streaming & CDN", icon: <Activity />, color: "text-red-400", items: [
         { name: "Apache Kafka",  slug: "apachekafka", color: "white",  desc: "A distributed streaming platform acting as the central nervous system, handling trillions of user events per day." },
         { name: "Apache Flink",  slug: "apacheflink", color: "E6526F", desc: "A stream processing engine used to analyze, filter, and process massive streams of data instantly as it arrives." },
         { name: "AWS CloudFront",slug: "amazonaws",   color: "FF9900", desc: "Amazon's Content Delivery Network (CDN) that speeds up the delivery of static assets and APIs globally." },
-        { name: "Open Connect",  slug: "netflix",     color: "E50914", desc: "Netflix's custom hardware and CDN placed directly inside your local internet provider for buffer-free video delivery." },
+        { name: "Open Connect",  slug: null, color: "E50914", fallback: OpenConnectIcon, desc: "Netflix's custom CDN hardware placed directly inside ISPs. Pushes 190+ Tbps peak and eliminates buffering globally." },
       ]},
       { category: "Big Data & Analytics", icon: <Layers />, color: "text-cyan-400", items: [
         { name: "Apache Spark", slug: "apachespark", color: "E25A1C", desc: "A lightning-fast analytics engine used to process massive datasets and train Netflix's recommendation algorithms." },
         { name: "Redshift",     slug: "amazonaws",   color: "8C4FFF", fallback: Database, desc: "Amazon's petabyte-scale data warehouse used to run complex queries and uncover trends in viewer habits." },
         { name: "Tableau",      slug: "tableau",     color: "E97627", desc: "A visual analytics platform used by data scientists to create interactive dashboards and visualize business metrics." },
         { name: "Apache Druid", slug: "apachedruid", color: "29BFFF", desc: "A real-time analytics database designed for fast slice-and-dice exploration of extremely large datasets." },
+        { name: "Apache Iceberg",slug: "apacheiceberg", color: "93C5FD", fallback: Database, desc: "Open table format for huge analytic datasets — provides time-travel queries and schema evolution at petabyte scale." },
       ]},
-      { category: "DevOps & CI/CD", icon: <Settings />, color: "text-yellow-400", items: [
+      { category: "DevOps & Platform", icon: <Settings />, color: "text-yellow-400", items: [
         { name: "JIRA",       slug: "jira",       color: "0052CC", desc: "An agile project management tool used by engineers to track issues, plan tasks, and manage software releases." },
         { name: "Confluence", slug: "confluence", color: "172B4D", desc: "A collaborative workspace where teams document their code, share knowledge, and outline architecture." },
         { name: "Jenkins",    slug: "jenkins",    color: "D33833", desc: "An automation server used to automatically build, test, and prepare software code for deployment continuously." },
-        { name: "Gradle",     slug: "gradle",     color: "white",  desc: "A flexible build automation tool used to compile code, run tests, and package applications reliably." },
+        { name: "Gradle",     slug: "gradle",     color: "11B072", desc: "A flexible build automation tool used to compile code, run tests, and package applications reliably." },
         { name: "Spinnaker",  slug: "spinnaker",  color: "139C85", desc: "An open-source continuous delivery platform created by Netflix to safely deploy software updates to the cloud." },
+        { name: "N. Titus",   slug: null, color: "E50914", fallback: TitusIcon, desc: "Netflix's internal container management platform — sits on top of Apache Mesos and deploys millions of containers per week." },
+        { name: "N. Atlas",   slug: null, color: "3b82f6", fallback: AtlasIcon, desc: "Netflix's in-memory dimensional time-series database for operational monitoring — processes billions of metrics per minute." },
+        { name: "Chaos Monkey",slug: null, color: "ef4444", fallback: ChaosMonkeyIcon, desc: "Intentionally kills random production servers to prove Netflix can survive any failure. Born the 'Simian Army'." },
+        { name: "EVCache",    slug: null, color: "a78bfa", fallback: EVCacheIcon, desc: "Netflix's distributed in-memory cache — reduces read load on Cassandra by orders of magnitude." },
       ]}
     ];
 
     /* ─── Storyboard Steps ────────────────────────────────────────── */
     const STORY_STEPS = [
-      { id: 'intro',    text: "Netflix's tech stack, built on AWS, is a masterpiece designed to serve viewers globally. Let's unpack the key pieces.", active: ['Users', 'DevOps', 'Mobile', 'Frontend', 'GraphQL', 'Backend', 'Database', 'Streaming', 'Messaging', 'BigData'], cam: { x: 0,    y: 0,    scale: 0.52 } },
-      { id: 'client',   text: "On mobile, Swift and Kotlin are the building blocks, while React powers the web.", active: ['Users', 'Mobile', 'Frontend'], cam: { x: 370,  y: 180,  scale: 1.2  } },
-      { id: 'api',      text: "For communication, REST and GraphQL handle client-server interaction.", active: ['Frontend', 'Mobile', 'GraphQL', 'Backend'], cam: { x: 40,   y: 380,  scale: 1.4  } },
-      { id: 'backend',  text: "gRPC powers microservices and WebSocket facilitates real-time connections.", active: ['Backend'], cam: { x: -300, y: 430,  scale: 1.4  } },
-      { id: 'storage',  text: "In storage, Cassandra and S3 keep data safe.", active: ['Backend', 'BigData'], cam: { x: -300, y: 190,  scale: 1.35 } },
-      { id: 'messaging',text: "Kafka and Flink manage big data streaming...", active: ['Messaging', 'Backend'], cam: { x: -300, y: -150, scale: 1.4  } },
-      { id: 'streaming',text: "...with S3 and Netflix's own Open Connect ensuring videos are stored and distributed efficiently.", active: ['Streaming', 'BigData'], cam: { x: 40,   y: -100, scale: 1.4  } },
-      { id: 'bigdata',  text: "Massive datasets are structured in Redshift, processed by Apache Spark, and visualized using Tableau and Druid to perfect the recommendation engine.", active: ['BigData'], cam: { x: -50,  y: -300, scale: 1.2  } },
-      { id: 'titus',    text: "Netflix's own Titus simplifies deploying and scaling, supported by Atlas for monitoring and Eureka for service discovery.", active: ['DevOps', 'Backend'], cam: { x: -450, y: 150,  scale: 1.1  } },
-      { id: 'devtools', text: "Development tools like Jira, Jenkins, and Spinnaker streamline workflows.", active: ['DevOps'], cam: { x: -560, y: 350,  scale: 1.3  } },
-      { id: 'chaos',    text: "Chaos Monkey tests systems resilience by deliberately causing problems, highlighting Netflix's dedication to reliability.", active: ['DevOps'], cam: { x: -560, y: 50,   scale: 1.4  } },
+      { id: 'intro',    text: "Netflix's tech stack, built entirely on AWS, is a masterpiece engineered to serve 220M+ viewers globally. Let's unpack how it all fits together.", active: ['Users', 'DevOps', 'Mobile', 'Frontend', 'GraphQL', 'Backend', 'Database', 'Streaming', 'Messaging', 'BigData', 'Protocol'], cam: { x: 0,    y: 0,    scale: 0.52 } },
+      { id: 'whyaws',  text: "In 2008, a catastrophic database corruption halted Netflix's DVD shipments for 3 days. They made a pivotal decision: move everything to AWS and never rely on a single data center again.", active: ['DevOps', 'Backend'], cam: { x: -350, y: 250,  scale: 1.1  } },
+      { id: 'client',  text: "On mobile, Swift and Kotlin are the building blocks of flawless iOS and Android apps. React powers the web — all communicating through a unified API layer.", active: ['Users', 'Mobile', 'Frontend'], cam: { x: 370,  y: 180,  scale: 1.2  } },
+      { id: 'api',     text: "REST handles standard requests, GraphQL gives clients exactly the data they need, WebSocket powers real-time features, and gRPC connects microservices internally at blazing speed.", active: ['Frontend', 'Mobile', 'GraphQL', 'Protocol'], cam: { x: 60,   y: 280,  scale: 1.35 } },
+      { id: 'clickplay', text: "When you hit ▶ Play: your request flows → Zuul (gateway) → Eureka (finds the right service) → backend microservices → Cassandra & EVCache return your watch history in milliseconds.", active: ['GraphQL', 'Backend', 'Database'], cam: { x: -100, y: 380,  scale: 1.3  } },
+      { id: 'backend', text: "Spring Boot powers hundreds of microservices. Zuul secures and routes all traffic. Eureka acts as a live phonebook so services can always find each other — even during deployments.", active: ['Backend'], cam: { x: -300, y: 430,  scale: 1.4  } },
+      { id: 'storage', text: "Cassandra stores viewing history and user state across multiple regions with zero downtime. EVCache keeps hot data in memory, slashing latency. MySQL handles billing and transactional data.", active: ['Backend', 'BigData'], cam: { x: -300, y: 190,  scale: 1.35 } },
+      { id: 'messaging',text: "Every play, pause, and search fires an event into Apache Kafka — the central nervous system processing trillions of events daily. Flink processes this stream in real-time to power recommendations.", active: ['Messaging', 'Backend'], cam: { x: -300, y: -150, scale: 1.4  } },
+      { id: 'streaming',text: "Video itself never touches backend servers. It's stored in AWS S3, transcoded into 2,200+ formats by Elastic Transcoder, then delivered by Open Connect — Netflix's own CDN hardware inside ISPs pushing 190+ Tbps.", active: ['Streaming', 'BigData'], cam: { x: 40,   y: -100, scale: 1.4  } },
+      { id: 'bigdata',  text: "Petabytes of interaction data flow into Redshift and Apache Iceberg. Spark trains the recommendation engine that drives 80% of what you watch. Druid enables instant analytics. Tableau visualizes it all.", active: ['BigData'], cam: { x: -50,  y: -300, scale: 1.2  } },
+      { id: 'titus',   text: "Netflix Titus deploys millions of containers per week. Atlas digests billions of metrics per minute. Eureka ensures every service is always discoverable even as thousands of instances spin up and down.", active: ['DevOps', 'Backend'], cam: { x: -450, y: 150,  scale: 1.1  } },
+      { id: 'devtools', text: "Engineers ship with confidence using Jenkins for CI, Spinnaker for safe canary deployments, and Gradle/Nebula for standardized builds — all tracked in Jira and documented in Confluence.", active: ['DevOps'], cam: { x: -560, y: 350,  scale: 1.3  } },
+      { id: 'chaos',   text: "Chaos Monkey randomly terminates production servers — on purpose. If the system can't survive deliberate failure, it can't survive real failure. This is how Netflix maintains 99.99% uptime at global scale.", active: ['DevOps'], cam: { x: -560, y: 50,   scale: 1.4  } },
     ];
 
     const isAct = (step, id) => step.active.includes(id);
@@ -590,20 +750,37 @@
             >
               {/* SVG Connecting Lines */}
               <svg className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+                {/* Users → Mobile */}
                 <path d="M 240 148 C 245 148, 245 185, 250 185" fill="none" stroke="#ef4444" strokeWidth="2" className={`transition-opacity duration-500 ${isAct(step,'Users')||isAct(step,'Mobile') ? 'opacity-100':'opacity-20'}`} />
                 <path d="M 240 210 C 245 210, 245 200, 250 200" fill="none" stroke="#f97316" strokeWidth="2" className={`transition-opacity duration-500 ${isAct(step,'Users')||isAct(step,'Mobile') ? 'opacity-100':'opacity-20'}`} />
                 <path d="M 240 272 C 245 272, 245 215, 250 215" fill="none" stroke="#a855f7" strokeWidth="2" className={`transition-opacity duration-500 ${isAct(step,'Users')||isAct(step,'Mobile') ? 'opacity-100':'opacity-20'}`} />
+                {/* Users → Frontend */}
                 <path d="M 240 334 C 245 334, 245 510, 250 510" fill="none" stroke="#3b82f6" strokeWidth="2" className={`transition-opacity duration-500 ${isAct(step,'Users')||isAct(step,'Frontend') ? 'opacity-100':'opacity-20'}`} />
                 <path d="M 240 396 C 245 396, 245 535, 250 535" fill="none" stroke="#14b8a6" strokeWidth="2" className={`transition-opacity duration-500 ${isAct(step,'Users')||isAct(step,'Frontend') ? 'opacity-100':'opacity-20'}`} />
+                {/* Mobile/Frontend → GraphQL */}
                 <path d="M 460 200 C 520 200, 520 190, 560 190" fill="none" stroke="#E50914" strokeWidth="3" className={`transition-opacity duration-500 ${isAct(step,'Mobile')||isAct(step,'GraphQL') ? 'opacity-100':'opacity-20'}`} />
                 <path d="M 460 450 C 520 450, 610 320, 610 240" fill="none" stroke="#E50914" strokeWidth="3" className={`transition-opacity duration-500 ${isAct(step,'Frontend')||isAct(step,'GraphQL') ? 'opacity-100':'opacity-20'}`} />
+                {/* Mobile/Frontend → Streaming */}
                 <path d="M 460 320 C 480 320, 450 420, 470 420" fill="none" stroke="#E50914" strokeWidth="3" className={`transition-opacity duration-500 ${isAct(step,'Mobile')||isAct(step,'Streaming') ? 'opacity-100':'opacity-20'}`} />
                 <path d="M 460 540 L 470 540" fill="none" stroke="#E50914" strokeWidth="3" className={`transition-opacity duration-500 ${isAct(step,'Frontend')||isAct(step,'Streaming') ? 'opacity-100':'opacity-20'}`} />
+                {/* GraphQL → Backend */}
                 <path d="M 660 190 L 780 190" fill="none" stroke="#E50914" strokeWidth="2" className={`flow-line ${isAct(step,'GraphQL')||isAct(step,'Backend') ? 'opacity-100':'opacity-20'}`} />
+                {isAct(step,'GraphQL')||isAct(step,'Backend') ? <path d="M 660 190 L 780 190" fill="none" stroke="#E10098" strokeWidth="2" className="particle-line" style={{animationDelay:'0s'}} /> : null}
+                {/* Protocol → Backend */}
+                <path d="M 750 375 L 780 375" fill="none" stroke="#4ade80" strokeWidth="2" className={`flow-line ${isAct(step,'Protocol')||isAct(step,'Backend') ? 'opacity-100':'opacity-20'}`} />
+                {isAct(step,'Protocol')||isAct(step,'Backend') ? <path d="M 750 375 L 780 375" fill="none" stroke="#4ade80" strokeWidth="2" className="particle-line" style={{animationDelay:'0.6s'}} /> : null}
+                {/* GraphQL → Protocol (downward stub) */}
+                <path d="M 610 240 C 610 280, 610 300, 610 310" fill="none" stroke="#4ade80" strokeWidth="1.5" strokeDasharray="4 4" className={`transition-opacity duration-500 ${isAct(step,'Protocol') ? 'opacity-80':'opacity-10'}`} />
+                {/* Streaming → Backend */}
                 <path d="M 750 480 L 780 480" fill="none" stroke="#E50914" strokeWidth="2" className={`flow-line ${isAct(step,'Streaming')||isAct(step,'Backend') ? 'opacity-100':'opacity-20'}`} />
+                {isAct(step,'Streaming')||isAct(step,'Backend') ? <path d="M 750 480 L 780 480" fill="none" stroke="#ff6b6b" strokeWidth="2" className="particle-line" style={{animationDelay:'0.3s'}} /> : null}
                 <path d="M 750 600 L 780 600" fill="none" stroke="#E50914" strokeWidth="2" className={`flow-line ${isAct(step,'Streaming')||isAct(step,'Messaging') ? 'opacity-100':'opacity-20'}`} />
+                {/* Backend → BigData */}
                 <path d="M 950 690 L 950 720" fill="none" stroke="#E50914" strokeWidth="2" className={`flow-line ${isAct(step,'Backend')||isAct(step,'BigData') ? 'opacity-100':'opacity-20'}`} />
+                {isAct(step,'Backend')||isAct(step,'BigData') ? <path d="M 950 690 L 950 720" fill="none" stroke="#fbbf24" strokeWidth="2" className="particle-line" style={{animationDelay:'0.9s'}} /> : null}
+                {/* Streaming → BigData */}
                 <path d="M 610 700 L 610 720" fill="none" stroke="#E50914" strokeWidth="2" className={`flow-line ${isAct(step,'Streaming')||isAct(step,'BigData') ? 'opacity-100':'opacity-20'}`} />
+                {isAct(step,'Streaming')||isAct(step,'BigData') ? <path d="M 610 700 L 610 720" fill="none" stroke="#60a5fa" strokeWidth="2" className="particle-line" style={{animationDelay:'0.4s'}} /> : null}
                 <path d="M 380 960 L 430 960" fill="none" stroke="#fff" strokeWidth="2" className={`flow-line ${isAct(step,'BigData') ? 'opacity-100':'opacity-20'}`} />
               </svg>
 
@@ -758,10 +935,11 @@
                   <RealIcon slug="confluence" color="172B4D" name="Confluence"    size={40} desc="A collaborative workspace where teams document their code, share knowledge, and outline architecture." />
                   <RealIcon slug="jenkins"    color="D33833" name="Jenkins"       size={40} desc="An automation server used to automatically build, test, and prepare software code for deployment continuously." />
                   <RealIcon slug="spinnaker"  color="139C85" name="Spinnaker"     size={40} desc="An open-source continuous delivery platform created by Netflix to safely deploy software updates to the cloud." />
-                  <RealIcon fallbackIcon={Activity}    color="3B82F6" name="N. Atlas"        size={40} desc="Netflix's primary in-memory dimensional time series database for operational monitoring." />
-                  <RealIcon fallbackIcon={ShieldAlert} color="EF4444" name="N. Chaos Monkey" size={40} desc="A tool that intentionally disables computers in Netflix's production network to test resilience." />
+                  <RealIcon fallbackIcon={TitusIcon}       color="E50914" name="N. Titus"         size={40} desc="Netflix's container management platform built on Apache Mesos, running millions of containers a week." />
+                  <RealIcon fallbackIcon={AtlasIcon}       color="3B82F6" name="N. Atlas"          size={40} desc="Netflix's primary in-memory dimensional time series database for operational monitoring and alerting." />
+                  <RealIcon fallbackIcon={ChaosMonkeyIcon} color="EF4444" name="N. Chaos Monkey"   size={40} desc="A tool that intentionally disables production servers to test that Netflix stays resilient and fault-tolerant." />
                   <RealIcon slug="gradle"     color="11B072" name="Gradle"        size={40} desc="A flexible build automation tool used to compile code, run tests, and package applications reliably." />
-                  <RealIcon fallbackIcon={Cpu}         color="DC2626" name="nebula"          size={40} desc="A collection of Gradle plugins built by Netflix to standardise builds." />
+                  <RealIcon fallbackIcon={Cpu}             color="DC2626" name="nebula"             size={40} desc="A collection of Gradle plugins built by Netflix to standardise builds across hundreds of microservices." />
                 </div>
               </DiagramGroup>
 
@@ -800,6 +978,15 @@
                 <RealIcon slug="graphql" color="E10098" size={60} tooltipTitle="GraphQL" desc="Smart data query layer between clients and backend services." hideLabel />
                 <span className="text-[13px] font-bold mt-1 text-gray-300">GraphQL</span>
               </div>
+
+              {/* 4b. Protocol Group — gRPC, REST, WebSocket */}
+              <DiagramGroup id="Protocol" title="API Protocols" step={step} className="w-[220px] h-[130px] left-[530px] top-[310px] flex flex-col items-center justify-center gap-2 py-4">
+                <div className="flex items-center justify-around w-full px-3">
+                  <RealIcon fallbackIcon={RestIcon}      color="22c55e" name="REST"      size={36} desc="Standard HTTP verbs — GET, POST, PUT, DELETE — for stateless client-server communication." />
+                  <RealIcon fallbackIcon={GrpcIcon}      color="4ade80" name="gRPC"      size={36} desc="High-performance binary RPC used by Netflix microservices for ultra-low latency calls." />
+                  <RealIcon fallbackIcon={WebSocketIcon} color="38bdf8" name="WebSocket"  size={36} desc="Full-duplex real-time connections powering live notifications, watch-party sync, and activity feeds." />
+                </div>
+              </DiagramGroup>
 
               {/* 5. Backend */}
               <DiagramGroup id="Backend" title={<span className="flex items-center gap-2">Backend <Code size={20}/></span>} step={step} className="w-[340px] h-[650px] left-[780px] top-[40px] flex flex-col p-6 pt-12 justify-between">
@@ -912,8 +1099,9 @@
     /* ─── Diagram Group ───────────────────────────────────────────── */
     function DiagramGroup({ id, title, step, className, children }) {
       const active = isAct(step, id);
+      const glowClass = active ? 'diagram-group-active' : '';
       return (
-        <div className={`absolute border border-dashed border-gray-500 rounded-xl transition-all duration-1000 ${active ? 'opacity-100 shadow-[0_0_40px_rgba(255,255,255,0.02)] bg-[#111]/90 backdrop-blur-sm' : 'opacity-20 grayscale bg-transparent'} ${className}`}>
+        <div className={`absolute border border-dashed rounded-xl transition-all duration-1000 ${active ? `opacity-100 border-red-600/40 bg-[#111]/90 backdrop-blur-sm node-activate ${glowClass}` : 'opacity-20 grayscale bg-transparent border-gray-500'} ${className}`}>
           {title && (
             <div className={`absolute -top-4 left-6 px-3 bg-[#0a0a0a] text-xl font-bold tracking-wide transition-colors duration-1000 ${active ? 'text-white drop-shadow-md' : 'text-gray-500'}`}>
               {title}
