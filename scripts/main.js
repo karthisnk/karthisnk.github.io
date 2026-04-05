@@ -3,6 +3,7 @@ import { categories, stories, getFeaturedStories, categoryColor } from "./data.j
 /* ─── DOM refs ─────────────────────────────────────── */
 const heroMainCard  = document.getElementById("heroMainCard");
 const heroImage     = document.getElementById("heroImage");
+const heroBody      = document.getElementById("heroBody");
 const heroTitle     = document.getElementById("heroTitle");
 const heroDesc      = document.getElementById("heroDesc");
 const heroTagRow    = document.getElementById("heroTagRow");
@@ -15,18 +16,21 @@ const categoryScroll = document.getElementById("categoryScroll");
 const scrollPrev     = document.getElementById("scrollPrev");
 const scrollNext     = document.getElementById("scrollNext");
 
-const searchInput = document.getElementById("searchInput");
-const viewGrid    = document.getElementById("viewGrid");
-const viewList    = document.getElementById("viewList");
-const resetBtn    = document.getElementById("resetBtn");
-const cardGrid    = document.getElementById("cardGrid");
-const emptyState  = document.getElementById("emptyState");
-const resultMeta  = document.getElementById("resultMeta");
-const themeToggle = document.getElementById("themeToggle");
+const searchInput  = document.getElementById("searchInput");
+const viewGrid     = document.getElementById("viewGrid");
+const viewList     = document.getElementById("viewList");
+const expandToggle = document.getElementById("expandToggle");
+const resetBtn     = document.getElementById("resetBtn");
+const cardGrid     = document.getElementById("cardGrid");
+const emptyState   = document.getElementById("emptyState");
+const resultMeta   = document.getElementById("resultMeta");
+const themeToggle  = document.getElementById("themeToggle");
 
 /* ─── Theme ────────────────────────────────────────── */
-const savedTheme = localStorage.getItem("theme") || "light";
-document.documentElement.setAttribute("data-theme", savedTheme);
+// Default to dark; stored preference overrides on return visits
+const storedTheme  = localStorage.getItem("theme");
+const initialTheme = storedTheme || "dark"; // dark is the default on first visit
+document.documentElement.setAttribute("data-theme", initialTheme);
 
 themeToggle?.addEventListener("click", () => {
   const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
@@ -34,18 +38,40 @@ themeToggle?.addEventListener("click", () => {
   localStorage.setItem("theme", next);
 });
 
+// Keep in sync if the OS switches while the page is open (and no stored pref)
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e => {
+  if (!localStorage.getItem("theme")) {
+    document.documentElement.setAttribute("data-theme", e.matches ? "dark" : "light");
+  }
+});
+
 /* ─── State ────────────────────────────────────────── */
 let activeCategory = "All";
 let searchTerm     = "";
 let currentView    = "grid";
 let carouselIndex  = 0;
+let expandModeOn   = false;
 
 const featured = getFeaturedStories();
+
+/* ─── Helpers ─────────────────────────────────────── */
+const MAX_VISIBLE_TAGS = 5; // max tags shown before "+N" button
+
+/**
+ * Build inline style for a colorful category chip using the category's brand color.
+ * Appends hex alpha suffixes: '1a' (~10% opacity) for background fill,
+ * '40' (~25% opacity) for the border, full color for text.
+ */
+function chipStyle(color) {
+  return `background:${color}1a;border:1px solid ${color}40;color:${color}`;
+}
 
 /* ═══════════════════════════════════════════════════
    Hero Carousel
    ═══════════════════════════════════════════════════ */
-function renderHero(idx) {
+const HERO_FADE_MS = 200; // duration of hero-body fade-out before content swap
+
+function _applyHeroContent(idx) {
   const main  = featured[idx];
   const mini1 = featured[(idx + 1) % featured.length];
   const mini2 = featured[(idx + 2) % featured.length];
@@ -56,10 +82,16 @@ function renderHero(idx) {
   heroTitle.textContent = main.title;
   heroDesc.textContent  = main.summary;
   heroCardLink.href     = main.page || `story.html?id=${encodeURIComponent(main.id)}`;
-  const catBadge = document.createElement("span");
-  catBadge.className = "hero-badge";
-  catBadge.textContent = main.category;
-  heroTagRow.appendChild(catBadge);
+
+  const allMainCats = main.categories || [main.category];
+  allMainCats.forEach(cat => {
+    const span = document.createElement("span");
+    span.className = "hero-badge";
+    const color = categoryColor(cat);
+    span.style.cssText = chipStyle(color);
+    span.textContent = cat;
+    heroTagRow.appendChild(span);
+  });
 
   heroTechTags.innerHTML = "";
   main.tags.forEach(tag => {
@@ -78,7 +110,6 @@ function renderHero(idx) {
     a.setAttribute("aria-label", `Open story: ${story.title}`);
 
     const color = categoryColor(story.category);
-
     a.innerHTML = `
       <span class="mini-card-category" style="color:${color}">${story.category}</span>
       <h3 class="mini-card-title">${story.title}</h3>
@@ -93,6 +124,25 @@ function renderHero(idx) {
     d.classList.toggle("active", i === idx);
     d.setAttribute("aria-selected", String(i === idx));
   });
+
+  observeMiniCards();
+}
+
+function renderHero(idx, animate = false) {
+  if (!animate) {
+    _applyHeroContent(idx);
+    return;
+  }
+  // Fade out hero body, swap content, fade back in
+  heroBody.classList.add("hero-body-exit");
+  setTimeout(() => {
+    _applyHeroContent(idx);
+    heroBody.classList.remove("hero-body-exit");
+    heroBody.classList.add("hero-body-enter");
+    heroBody.addEventListener("animationend", () => {
+      heroBody.classList.remove("hero-body-enter");
+    }, { once: true });
+  }, HERO_FADE_MS);
 }
 
 function buildDots() {
@@ -105,7 +155,7 @@ function buildDots() {
     btn.setAttribute("aria-selected", String(i === 0));
     btn.addEventListener("click", () => {
       carouselIndex = i;
-      renderHero(carouselIndex);
+      renderHero(carouselIndex, true);
     });
     carouselDots.appendChild(btn);
   });
@@ -114,14 +164,14 @@ function buildDots() {
 /* Auto-advance carousel every 6 s */
 let carouselTimer = setInterval(() => {
   carouselIndex = (carouselIndex + 1) % featured.length;
-  renderHero(carouselIndex);
+  renderHero(carouselIndex, true);
 }, 6000);
 
 heroMainCard.addEventListener("mouseenter", () => clearInterval(carouselTimer));
 heroMainCard.addEventListener("mouseleave", () => {
   carouselTimer = setInterval(() => {
     carouselIndex = (carouselIndex + 1) % featured.length;
-    renderHero(carouselIndex);
+    renderHero(carouselIndex, true);
   }, 6000);
 });
 
@@ -184,6 +234,63 @@ resetBtn.addEventListener("click", () => {
   renderCards();
 });
 
+/* ── Expand mode toggle ── */
+expandToggle?.addEventListener("click", () => {
+  expandModeOn = !expandModeOn;
+  expandToggle.setAttribute("aria-pressed", String(expandModeOn));
+  expandToggle.classList.toggle("active", expandModeOn);
+  cardGrid.classList.toggle("expand-mode", expandModeOn);
+});
+
+/* ─── Per-card expand click ──────────────────────── */
+cardGrid.addEventListener("click", e => {
+  const btn = e.target.closest(".card-expand-btn");
+  if (!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  const card = btn.closest(".story-card");
+  if (!card) return;
+  card.classList.toggle("is-expanded");
+  const expanded = card.classList.contains("is-expanded");
+  btn.setAttribute("aria-label", expanded ? "Collapse card" : "Expand card");
+  btn.querySelector(".card-expand-icon").innerHTML = expanded
+    ? `<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/>`
+    : `<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>`;
+});
+
+/* ─── Per-card tag expand click ────────────────────── */
+cardGrid.addEventListener("click", e => {
+  const btn = e.target.closest(".card-tag-more");
+  if (!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  const row = btn.closest(".card-tag-row");
+  if (!row) return;
+  const storyId = row.dataset.storyId;
+  const story = stories.find(s => s.id === storyId);
+  if (!story) return;
+  // Replace entire row with all tags + collapse button
+  row.innerHTML = story.tags
+    .map(t => `<span class="card-tag">${t}</span>`)
+    .join("") +
+    `<button class="card-tag-less" aria-label="Show fewer tags">−&nbsp;less</button>`;
+  row.dataset.expanded = "true";
+});
+
+cardGrid.addEventListener("click", e => {
+  const btn = e.target.closest(".card-tag-less");
+  if (!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  const row = btn.closest(".card-tag-row");
+  if (!row) return;
+  const storyId = row.dataset.storyId;
+  const story = stories.find(s => s.id === storyId);
+  if (!story) return;
+  row.innerHTML = buildTagRowInner(story);
+  delete row.dataset.expanded;
+});
+
 /* ═══════════════════════════════════════════════════
    Card rendering
    ═══════════════════════════════════════════════════ */
@@ -199,6 +306,16 @@ function matchesFilters(story) {
   return haystack.includes(searchTerm);
 }
 
+function buildTagRowInner(story) {
+  const visible = story.tags.slice(0, MAX_VISIBLE_TAGS);
+  const hidden  = story.tags.length - MAX_VISIBLE_TAGS;
+  let html = visible.map(t => `<span class="card-tag">${t}</span>`).join("");
+  if (hidden > 0) {
+    html += `<button class="card-tag-more" aria-label="Show ${hidden} more tags">+${hidden}</button>`;
+  }
+  return html;
+}
+
 function renderCards() {
   const filtered = stories.filter(matchesFilters);
   cardGrid.innerHTML = "";
@@ -212,48 +329,76 @@ function renderCards() {
   emptyState.classList.add("hidden");
 
   filtered.forEach(story => {
-    const color = categoryColor(story.category);
-
     const a = document.createElement("a");
     a.className = "story-card";
     a.href = story.page || `story.html?id=${encodeURIComponent(story.id)}`;
     a.setAttribute("role", "listitem");
     a.setAttribute("aria-label", `Open story: ${story.title}`);
 
-    /* Build inner HTML */
-    const tagsHtml = story.tags
-      .map(t => `<span class="card-tag">${t}</span>`)
+    /* Colorful category chips (top bar) */
+    const allCats = story.categories || [story.category];
+    const chipsHtml = allCats
+      .map(cat => {
+        const color = categoryColor(cat);
+        return `<span class="card-cat-chip" style="${chipStyle(color)}">${cat}</span>`;
+      })
       .join("");
 
+    /* Thumbnail */
     const imgHtml = story.image
-      ? `<img
-           class="card-thumb"
-           src="${story.image}"
-           alt=""
-           width="110"
-           height="110"
-           loading="lazy"
-         />`
-      : `<div class="card-thumb" aria-hidden="true"></div>`;
+      ? `<img class="card-thumb" src="${story.image}" alt="" width="110" height="110" loading="lazy" />`
+      : `<div class="card-thumb card-thumb-empty" aria-hidden="true"></div>`;
 
-    const allCats = story.categories || [story.category];
-    const categoriesHtml = allCats
-      .map(cat => `<span class="card-cat-label" style="color:${categoryColor(cat)}">${cat}</span>`)
-      .join('<span class="card-cat-sep"> · </span>');
+    /* Tags with +N overflow */
+    const tagRowInner = buildTagRowInner(story);
 
     a.innerHTML = `
       <div class="card-content">
-        <div class="card-categories">
-          ${categoriesHtml}
-        </div>
+        <div class="card-cat-bar">${chipsHtml}</div>
         <h3 class="card-title-el">${story.title}</h3>
         <p class="card-desc">${story.summary}</p>
-        <div class="card-tag-row">${tagsHtml}</div>
+        <div class="card-tag-row" data-story-id="${story.id}">${tagRowInner}</div>
       </div>
       ${imgHtml}
+      <button class="card-expand-btn" aria-label="Expand card">
+        <svg class="card-expand-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+      </button>
     `;
 
     cardGrid.appendChild(a);
+  });
+
+  observeCards();
+}
+
+/* ═══════════════════════════════════════════════════
+   Card entrance animation (IntersectionObserver)
+   ═══════════════════════════════════════════════════ */
+const CARD_STAGGER_MS       = 55;  // delay increment per story card
+const MINI_INITIAL_DELAY_MS = 120; // base delay for mini hero cards
+const MINI_STAGGER_MS       = 80;  // delay increment per mini card
+
+const cardObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("animate-in");
+      cardObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: "0px 0px -20px 0px" });
+
+function observeCards() {
+  cardGrid.querySelectorAll(".story-card").forEach((card, i) => {
+    card.style.animationDelay = `${i * CARD_STAGGER_MS}ms`;
+    cardObserver.observe(card);
+  });
+}
+
+/* Mini cards in the hero stack */
+function observeMiniCards() {
+  document.querySelectorAll(".mini-card").forEach((card, i) => {
+    card.style.animationDelay = `${MINI_INITIAL_DELAY_MS + i * MINI_STAGGER_MS}ms`;
+    cardObserver.observe(card);
   });
 }
 
